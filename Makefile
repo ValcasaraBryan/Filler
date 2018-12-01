@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = virtual
+NAME = resources/players/virtual.filler
 
 SRC = main.c
 
@@ -27,15 +27,17 @@ FLAG = -Wall -Wextra -Werror
 
 all : $(NAME)
 
-$(NAME) : exe
+$(NAME) :
+	make -C libft/
 
 exe :
 	@gcc $(SRC) $(LIB) -o $(NAME)
-ifneq ($(EXE), 0)
-	@./virtual $(EXE)
-else
-	@echo "Usage : La variable EXE n'est pas initialisee"
-endif
+	@./resources/filler_vm -f resources/maps/map00 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler
+
+std_2 :
+	@gcc $(SRC) $(LIB) -o $(NAME)
+	@./resources/filler_vm -f resources/maps/map00 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | grep "std 2"
+
 clean :
 	@rm -f $(OBJET)
 

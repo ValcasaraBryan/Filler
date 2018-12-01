@@ -14,28 +14,15 @@
 #include "libft/includes/get_next_line.h"
 #include "libft/includes/ft_printf.h"
 
-int         main(int ac, char **av)
+int         main(void)
 {
     char    *line;
     int     fd;
-    int     x;
-    int     y;
 
-    y = 0;
-    if (ac == 2)
-    {
-        fd = open(av[ac - 1], O_RDONLY);
-        if (fd >= 0)
-            while ((get_next_line(fd, &line)))
-            {
-                ft_printf("%s|x = %d|y = %d\n", line, ft_strlen(line), ++y);
-                free(line);
-            }
-        else
-            ft_printf("Bad argument\n");
-    }
-    
-    else
-        ft_printf("Usage : ./player [map]\n");
+    ft_printf("$$$ exec p1 : [players/virtual.filler]");
+    fd = open("42", O_RDWR);
+    if (fd >= 0)
+        while ((get_next_line(0, &line)))
+            ft_fprintf("%s\n", fd, line);
     return (0);
 }
