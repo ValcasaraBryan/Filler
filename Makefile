@@ -21,6 +21,8 @@ EXE = 0
 ARG = 0
 ARG_2 = 0
 
+HEAD = -I Filler.h
+
 OBJET = $(SRC:.c=.o)
 
 FLAG = -Wall -Wextra -Werror
@@ -30,13 +32,15 @@ all : $(NAME)
 $(NAME) :
 	make -C libft/
 
-exe :
+comp :
 	@gcc $(SRC) $(LIB) -o $(NAME)
-	@./resources/filler_vm -f resources/maps/map00 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler
 
-std_2 :
-	@gcc $(SRC) $(LIB) -o $(NAME)
-	@./resources/filler_vm -f resources/maps/map00 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | grep "std 2"
+exe : comp
+	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | more
+
+std_2 : comp
+	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | grep "test"
+
 
 clean :
 	@rm -f $(OBJET)
