@@ -24,10 +24,12 @@ typedef struct          s_map
     struct s_map        *next;
 }                       t_map;
 
-typedef struct          s_tailles
+typedef struct          s_tailles_map
 {
     int                 x_map;
     int                 y_map;
+    int                 x_pos_ennemi;
+    int                 y_pos_ennemi;
     struct  s_map       *map;
 }                       t_coor;
 
@@ -41,6 +43,8 @@ typedef struct          s_tailles_piece
 {
     int                 x_piece;
     int                 y_piece;
+    int                 x_pos_stars;
+    int                 y_pos_stars;
     struct s_piece      *piece;
 }                       t_coor_piece;
 
