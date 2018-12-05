@@ -42,7 +42,7 @@ typedef struct          s_tailles_piece
     int                 x_piece;
     int                 y_piece;
     struct s_piece      *piece;
-}
+}                       t_coor_piece;
 
 
 #endif
