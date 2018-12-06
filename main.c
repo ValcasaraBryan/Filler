@@ -12,6 +12,34 @@
 
 #include "Filler.h"
 
+int         erase_list(t_coor *map, t_coor_piece *piece)
+{
+    int     ret;
+
+    ret = 0;
+    if (map->map)
+    {
+        while (map->map)
+        {
+            free(map->map->map);
+            map->map->map = NULL;
+            map->map = map->map->next;
+        }
+        ret++;
+    }
+    if (piece->piece)
+    {
+        while (piece->piece)
+        {
+            free(piece->piece->piece);
+            piece->piece->piece = NULL;
+            piece->piece = piece->piece->next;
+        }
+        ret++;
+    }
+    return (ret);
+}
+
 t_map       *new_map(char *line)
 {
     t_map *list;
@@ -166,6 +194,33 @@ int         pos_ennemi(t_coor *map, char ennemi)
     return (0);
 }
 
+int         pos_me_start(t_coor *map)
+{
+    t_map   *head;
+    int     x;
+    int     y;
+
+    if (!&(map->map))
+        return (0);
+    if (map->x_pos_me == 0 && map->y_pos_me == 0)
+    {
+        head = map->map;
+        x = 0;
+        while (head)
+        {
+            if ((y = ft_strnchr(head->map, map->me, map->y_map)) >= 0)
+            {
+                map->x_pos_me = x;
+                map->y_pos_me = y;
+                return (1);
+            }
+            head = head->next;
+            x++;
+        }
+    }
+    return (0);
+}
+
 int         pos_piece(t_coor_piece *piece)
 {
     t_piece *head;
@@ -190,61 +245,81 @@ int         pos_piece(t_coor_piece *piece)
     return (1);
 }
 
+int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
+{
+    if (map && piece)
+    {
+        map->map = NULL;
+        piece->piece = NULL;
+        map->x_map = 0;
+        map->y_map = 0;
+        map->x_pos_ennemi = 0;
+        map->y_pos_ennemi = 0;
+        map->y_pos_me = 0;
+        map->x_pos_me = 0;
+        map->me = (player == 1) ? 'O' : 'X';
+        piece->x_piece = 0;
+        piece->y_piece = 0;
+        piece->x_pos_stars = 0;
+        piece->y_pos_stars = 0;
+        return (1);
+    }
+    else
+        return (0);
+}
+
+void    print_fd(int fd, t_coor map, t_coor_piece piece)
+{
+        ft_fprintf("pos_enenemi  = x = %d, y = %d\n", fd, map.x_pos_ennemi, map.y_pos_ennemi);
+        ft_fprintf("pos_me       = x = %d, y = %d\n", fd, map.x_pos_me, map.y_pos_me);
+        ft_fprintf("pos_piece    = x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
+        ft_fprintf("pos_stars    = x = %d, y = %d\n", fd, piece.x_pos_stars, piece.y_pos_stars);
+        ft_fprintf("position     = x = %d, y = %d\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+        while (map.map)
+        {
+            ft_fprintf("%s\n", fd, map.map->map);
+            map.map = map.map->next;
+        }
+        ft_fprintf("\n", fd);
+        while (piece.piece)
+        {
+            ft_fprintf("%s\n", fd, piece.piece->piece);
+            piece.piece = piece.piece->next;
+        }
+        ft_fprintf("\n", fd);
+}
 
 int         main(int argc, char **argv)
 {
     char    *line;
-    static int     player = 0;
-    char    me;
+    int     etapes;
+    int fd;
     t_coor          map;
     t_coor_piece    piece;
 
-//    t_map          *tmp_map;
-//    t_piece        *tmp_piece;
-
-    map.map = NULL;
-    piece.piece = NULL;
-    if (player == 0 && get_next_line(0, &line))
+    fd = open("res", O_RDWR);   
+    etapes = 0;
+    if (get_next_line(0, &line))
     {
-        player = (!(ft_strstr(line, argv[0]))) ? 2 : 1;
+        init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2);
         free(line);
-        ft_printf("$$$ exec p%d : [%s]\n", player, argv[0]);
     }
-    me = (player == 1) ? 'O' : 'X';
-    int fd;
-    fd = open("res", O_RDWR);
-    /*
-    **  Parsing Entree Standars
-    */
     while (get_next_line(0, &line))
     {
-        parsing_map(&map, line);
-        parsing_piece(&piece, line);
+        etapes += parsing_map(&map, line);
+        etapes += parsing_piece(&piece, line);
+        pos_ennemi(&map, (map.me == 'O') ? 'X' : 'O');
+        pos_me_start(&map);
+        pos_piece(&piece);
+        if (etapes == 2)
+        {
+            print_fd(fd, map, piece);
+            ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+            ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+            etapes = 0;
+            erase_list(&map, &piece);
+        }
     }
-    pos_ennemi(&map, (me == 'O') ? 'X' : 'O');
-    pos_piece(&piece);
-    ft_fprintf("poss_map   = x = %d, y = %d\n", fd, map.x_pos_ennemi, map.y_pos_ennemi);
-    ft_fprintf("poss_piece = x = %d, y = %d\n", fd, piece.x_pos_stars, piece.y_pos_stars);
-    /*
-    ** Affichage de list
-    */
-    //tmp_map = map.map;
-    //ft_fprintf("x = %d, y = %d\n", fd, map.x_map, map.y_map);
-    //while (tmp_map)
-    //{
-    //    ft_fprintf("%s\n", fd, tmp_map->map);
-    //    tmp_map = tmp_map->next;
-    //}
-    //tmp_piece = piece.piece;
-    //ft_fprintf("x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
-    //while (tmp_piece)
-    //{
-    //    ft_fprintf("%s\n", fd, tmp_piece->piece);
-    //    tmp_piece = tmp_piece->next;
-    //}
     close(fd);
-    /*
-    ** 
-    */
     return (0);
 }

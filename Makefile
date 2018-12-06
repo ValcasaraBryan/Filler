@@ -36,9 +36,11 @@ comp :
 	@gcc $(SRC) $(LIB) -o $(NAME)
 
 exe : comp
+	@echo -n "" > res
 	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | more
 
 std_2 : comp
+	@echo -n "" > res
 	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | grep "test"
 
 

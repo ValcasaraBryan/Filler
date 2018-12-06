@@ -30,6 +30,9 @@ typedef struct          s_tailles_map
     int                 y_map;
     int                 x_pos_ennemi;
     int                 y_pos_ennemi;
+    int                 x_pos_me;
+    int                 y_pos_me;
+    char                me;
     struct  s_map       *map;
 }                       t_coor;
 
