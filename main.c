@@ -110,6 +110,7 @@ int         parsing_map(t_coor *map, char *line)
         tab = ft_strsplit(line, ' ');
         map->x_map = ft_atoi(tab[1]);
         map->y_map = ft_atoi(tab[2]);
+        map->pos_me = (int **)malloc(sizeof (int *) * map->x_map);
         get_next_line(0, &line);
         while (i < map->x_map && get_next_line(0, &line))
         {
@@ -139,6 +140,7 @@ int         parsing_piece(t_coor_piece *piece, char *line)
         tab = ft_strsplit(line, ' ');
         piece->x_piece = ft_atoi(tab[1]);
         piece->y_piece = ft_atoi(tab[2]);
+        piece->pos_stars = (int **)malloc(sizeof (int *) * piece->x_piece);
         while (i < piece->x_piece && get_next_line(0, &line))
         {
             piece->piece = add_piece(piece->piece, new_piece(line));
@@ -154,69 +156,31 @@ int         parsing_piece(t_coor_piece *piece, char *line)
         return (0);
 }
 
-int         valid_pos(t_coor *map, t_map *head, char ennemi, int x)
-{
-    int     y;
-
-    if ((y = ft_strnchr(head->map, ennemi, map->y_map)) >= 0)
-    {
-        map->x_pos_ennemi = x;
-        map->y_pos_ennemi = y;
-        return (1);
-    }
-    else
-        return (0);
-}
-
-int         pos_ennemi(t_coor *map, char ennemi)
-{
-    t_map           *head;
-    int             prev_pos;
-    unsigned int    boucle;
-    int             x;
-
-    if (!&(map->map))
-        return (0);
-    boucle = 2;
-    while (boucle--)
-    {
-        x = 0;
-        head = map->map;
-        prev_pos = (boucle < 1) ? 0 : 32;
-        while (head)
-        {
-            if (valid_pos(map, head, ennemi + prev_pos, x) == 1)
-                return (1);
-            head = head->next;
-            x++;
-        }
-    }
-    return (0);
-}
-
-int         pos_me_start(t_coor *map)
+int         map_chaleur(t_coor *map)
 {
     t_map   *head;
     int     x;
     int     y;
 
-    if (!&(map->map))
+    if (!map->map)
         return (0);
-    if (map->x_pos_me == 0 && map->y_pos_me == 0)
+    head = map->map;
+    x = 0;
+    while (head)
     {
-        head = map->map;
-        x = 0;
-        while (head)
+        y = -1;
+        map->pos_me[x] = (int *)malloc(sizeof(int) * map->y_map);
+        while (head->map[++y])
         {
-            if ((y = ft_strnchr(head->map, map->me, map->y_map)) >= 0)
-            {
-                map->x_pos_me = x;
-                map->y_pos_me = y;
-                return (1);
-            }
-            head = head->next;
-            x++;
+            if (head->map[y] == map->me)
+                map->pos_me[x][y] = 0;
+            else if (head->map[y] == map->ennemi)
+                map->pos_me[x][y] = -1;
+            else
+                map->pos_me[x][y] = -2;
         }
+        head = head->next;
+        x++;
     }
     return (0);
 }
@@ -227,18 +191,16 @@ int         pos_piece(t_coor_piece *piece)
     int     y;
     int     x;
 
-    if (!&(piece->piece))
+    if (!piece->piece)
         return (0);
     head = piece->piece;
     x = 0;
     while (head)
     {
-        if ((y = ft_strnchr(head->piece, '*', piece->y_piece)) >= 0)
-        {
-            piece->y_pos_stars = y;
-            piece->x_pos_stars = x;
-            return (1);
-        }
+        y = -1;
+        piece->pos_stars[x] = (int *)malloc(sizeof(int) * piece->y_piece);
+        while (head->piece[++y])
+            piece->pos_stars[x][y] = (head->piece[y] == '*') ? y : 0;
         head = head->next;
         x++;
     }
@@ -253,15 +215,10 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
         piece->piece = NULL;
         map->x_map = 0;
         map->y_map = 0;
-        map->x_pos_ennemi = 0;
-        map->y_pos_ennemi = 0;
-        map->y_pos_me = 0;
-        map->x_pos_me = 0;
         map->me = (player == 1) ? 'O' : 'X';
+        map->ennemi = (player == 1) ? 'X' : 'O';
         piece->x_piece = 0;
         piece->y_piece = 0;
-        piece->x_pos_stars = 0;
-        piece->y_pos_stars = 0;
         return (1);
     }
     else
@@ -270,11 +227,41 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
 
 void    print_fd(int fd, t_coor map, t_coor_piece piece)
 {
-        ft_fprintf("pos_enenemi  = x = %d, y = %d\n", fd, map.x_pos_ennemi, map.y_pos_ennemi);
-        ft_fprintf("pos_me       = x = %d, y = %d\n", fd, map.x_pos_me, map.y_pos_me);
+        int x;
+        int y;
+
+        x = 0;
         ft_fprintf("pos_piece    = x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
-        ft_fprintf("pos_stars    = x = %d, y = %d\n", fd, piece.x_pos_stars, piece.y_pos_stars);
-        ft_fprintf("position     = x = %d, y = %d\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+        ft_fprintf("pos_map    = x = %d, y = %d\n", fd, map.x_map, map.y_map);
+        ft_fprintf("\n", fd);
+        ft_fprintf("\n", fd);
+        while (x < map.x_map)
+        {
+            y = 0;
+            while (y < map.y_map)
+            {
+                ft_fprintf("%d", fd, map.pos_me[x][y]);
+                if (y == map.y_map - 1)
+                    ft_fprintf("\n", fd);
+                y++;
+            }
+            x++;
+        }
+        ft_fprintf("\n", fd);
+        ft_fprintf("\n", fd);
+        x = 0;
+        while (x < piece.x_piece)
+        {
+            y = 0;
+            while (y < piece.y_piece)
+            {
+                if (piece.pos_stars[x][y] != 0)
+                    ft_fprintf("pos_stars    = x = %d, y = %d\n", fd, x, piece.pos_stars[x][y]);
+                y++;
+            }
+            x++;
+        }
+        ft_fprintf("\n", fd);
         while (map.map)
         {
             ft_fprintf("%s\n", fd, map.map->map);
@@ -308,14 +295,13 @@ int         main(int argc, char **argv)
     {
         etapes += parsing_map(&map, line);
         etapes += parsing_piece(&piece, line);
-        pos_ennemi(&map, (map.me == 'O') ? 'X' : 'O');
-        pos_me_start(&map);
+        map_chaleur(&map);
         pos_piece(&piece);
         if (etapes == 2)
         {
             print_fd(fd, map, piece);
-            ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
-            ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+            // ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.pos_me[] - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+            // ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             etapes = 0;
             erase_list(&map, &piece);
         }

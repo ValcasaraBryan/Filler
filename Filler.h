@@ -28,11 +28,9 @@ typedef struct          s_tailles_map
 {
     int                 x_map;
     int                 y_map;
-    int                 x_pos_ennemi;
-    int                 y_pos_ennemi;
-    int                 x_pos_me;
-    int                 y_pos_me;
+    int                 **pos_me;
     char                me;
+    char                ennemi;
     struct  s_map       *map;
 }                       t_coor;
 
@@ -46,8 +44,7 @@ typedef struct          s_tailles_piece
 {
     int                 x_piece;
     int                 y_piece;
-    int                 x_pos_stars;
-    int                 y_pos_stars;
+    int                 **pos_stars;
     struct s_piece      *piece;
 }                       t_coor_piece;
 
