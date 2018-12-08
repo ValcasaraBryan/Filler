@@ -111,6 +111,8 @@ int         parsing_map(t_coor *map, char *line)
         map->x_map = ft_atoi(tab[1]);
         map->y_map = ft_atoi(tab[2]);
         map->map_chaleur = (int **)malloc(sizeof (int *) * map->x_map);
+        map->me_list = (int **)malloc(sizeof(int *) * map->x_map);
+        map->ennemi_list = (int **)malloc(sizeof(int *) * map->x_map);
         get_next_line(0, &line);
         while (i < map->x_map && get_next_line(0, &line))
         {
@@ -163,10 +165,10 @@ int         tab_int(t_coor *map, char char_of_player)
     int     i;
     int     j;
 
-    if (!map->map)
+    if (!map->map || !map->me_list || !map->ennemi_list)
         return (0);
     head = map->map;
-    tab = (int **)malloc(sizeof(int *) * map->x_map);
+    tab = (char_of_player == map->me) ? map->me_list : map->ennemi_list;
     j = 0;
     while (head)
     {
@@ -178,10 +180,6 @@ int         tab_int(t_coor *map, char char_of_player)
         j++;
         head = head->next;
     }
-    if (char_of_player == map->me)
-        map->me_list = tab;
-    else
-        map->ennemi_list = tab;
     return (1);
 }
 
@@ -202,11 +200,11 @@ int         map_chaleur(t_coor *map)
         while (head->map[++y])
         {
             if (head->map[y] == map->me || head->map[y] == map->me + 32)
-                map->map_chaleur[x][y] = 0;
+                map->map_chaleur[x][y] = -1;
             else if (head->map[y] == map->ennemi || head->map[y] == map->ennemi + 32)
-                map->map_chaleur[x][y] = 1;
+                map->map_chaleur[x][y] = -2;
             else
-                map->map_chaleur[x][y] = 2;
+                map->map_chaleur[x][y] = 0;
         }
         head = head->next;
         x++;
@@ -300,20 +298,22 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
             }
             x++;
         }
+
+        // ft_fprintf("\n", fd);
+        // while (map.map)
+        // {
+            // ft_fprintf("%s\n", fd, map.map->map);
+            // map.map = map.map->next;
+        // }
         ft_fprintf("\n", fd);
-        while (map.map)
-        {
-            ft_fprintf("%s\n", fd, map.map->map);
-            map.map = map.map->next;
-        }
         ft_fprintf("\n", fd);
         ft_fprintf("pos_piece    = x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
-        ft_fprintf("\n", fd);
-        while (piece.piece)
-        {
-            ft_fprintf("%s\n", fd, piece.piece->piece);
-            piece.piece = piece.piece->next;
-        }
+        // ft_fprintf("\n", fd);
+        // while (piece.piece)
+        // {
+            // ft_fprintf("%s\n", fd, piece.piece->piece);
+            // piece.piece = piece.piece->next;
+        // }
         ft_fprintf("\n", fd);
         x = 0;
         while (x < piece.x_piece)
