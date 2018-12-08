@@ -35,6 +35,8 @@ typedef struct          s_tailles_map
     char                me;
     char                ennemi;
     struct  s_map       *map;
+    int                 **me_list;
+    int                 **ennemi_list;
 }                       t_coor;
 
 typedef struct          s_piece

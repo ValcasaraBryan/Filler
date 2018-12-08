@@ -156,6 +156,64 @@ int         parsing_piece(t_coor_piece *piece, char *line)
         return (0);
 }
 
+int         tab_int_me(t_coor *map)
+{
+    t_map  *head;
+    int     i;
+    int     j;
+
+    if (!map->map)
+        return (0);
+    head = map->map;
+    map->me_list = (int **)malloc(sizeof(int *) * map->x_map);
+    j = 0;
+    while (head)
+    {
+        map->me_list[j] = (int *)malloc(sizeof(int) * map->y_map);
+        i = 0;
+        while (head->map[i])
+        {
+            if (head->map[i] == map->me || head->map[i] == map->me + 32)
+                map->me_list[j][i] = i;
+            else
+                map->me_list[j][i] = -1;
+            i++;
+        }
+        j++;
+        head = head->next;
+    }
+    return (1);
+}
+
+int         tab_int_ennemi(t_coor *map)
+{
+    t_map  *head;
+    int     i;
+    int     j;
+
+    if (!map->map)
+        return (0);
+    head = map->map;
+    map->ennemi_list = (int **)malloc(sizeof(int *) * map->x_map);
+    j = 0;
+    while (head)
+    {
+        map->ennemi_list[j] = (int *)malloc(sizeof(int) * map->y_map);
+        i = 0;
+        while (head->map[i])
+        {
+            if (head->map[i] == map->ennemi || head->map[i] == map->ennemi + 32)
+                map->ennemi_list[j][i] = i;
+            else
+                map->ennemi_list[j][i] = -1;
+            i++;
+        }
+        j++;
+        head = head->next;
+    }
+    return (1);
+}
+
 int         map_chaleur(t_coor *map)
 {
     t_map   *head;
@@ -238,6 +296,32 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
             y = 0;
             while (y < map.y_map)
             {
+                if (map.me_list[x][y] != -1)
+                    ft_fprintf("me_list     = x = %d, y = %d\n", fd, x, map.me_list[x][y]);
+                y++;
+            }
+            x++;
+        }
+        x = 0;
+        ft_fprintf("\n", fd);
+        while (x < map.x_map)
+        {
+            y = 0;
+            while (y < map.y_map)
+            {
+                if (map.ennemi_list[x][y] != -1)
+                    ft_fprintf("ennemi_list     = x = %d, y = %d\n", fd, x, map.ennemi_list[x][y]);
+                y++;
+            }
+            x++;
+        }
+        x = 0;
+        ft_fprintf("\n", fd);
+        while (x < map.x_map)
+        {
+            y = 0;
+            while (y < map.y_map)
+            {
                 ft_fprintf("%d", fd, map.map_chaleur[x][y]);
                 if (y == map.y_map - 1)
                     ft_fprintf("\n", fd);
@@ -293,10 +377,15 @@ int         main(int argc, char **argv)
     {
         etapes += parsing_map(&map, line);
         etapes += parsing_piece(&piece, line);
-        map_chaleur(&map);
-        pos_piece(&piece);
-        if (etapes == 2)
+        if (etapes == 1)
         {
+            tab_int_me(&map);
+            tab_int_ennemi(&map);
+            map_chaleur(&map);
+        }
+        else if (etapes == 2)
+        {
+            pos_piece(&piece);
             print_fd(fd, map, piece);
             // ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             // ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
