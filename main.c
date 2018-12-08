@@ -110,7 +110,7 @@ int         parsing_map(t_coor *map, char *line)
         tab = ft_strsplit(line, ' ');
         map->x_map = ft_atoi(tab[1]);
         map->y_map = ft_atoi(tab[2]);
-        map->pos_me = (int **)malloc(sizeof (int *) * map->x_map);
+        map->map_chaleur = (int **)malloc(sizeof (int *) * map->x_map);
         get_next_line(0, &line);
         while (i < map->x_map && get_next_line(0, &line))
         {
@@ -169,20 +169,20 @@ int         map_chaleur(t_coor *map)
     while (head)
     {
         y = -1;
-        map->pos_me[x] = (int *)malloc(sizeof(int) * map->y_map);
+        map->map_chaleur[x] = (int *)malloc(sizeof(int) * map->y_map);
         while (head->map[++y])
         {
-            if (head->map[y] == map->me)
-                map->pos_me[x][y] = 0;
-            else if (head->map[y] == map->ennemi)
-                map->pos_me[x][y] = -1;
+            if (head->map[y] == map->me || head->map[y] == map->me + 32)
+                map->map_chaleur[x][y] = 0;
+            else if (head->map[y] == map->ennemi || head->map[y] == map->ennemi + 32)
+                map->map_chaleur[x][y] = -1;
             else
-                map->pos_me[x][y] = -2;
+                map->map_chaleur[x][y] = -2;
         }
         head = head->next;
         x++;
     }
-    return (0);
+    return (1);
 }
 
 int         pos_piece(t_coor_piece *piece)
@@ -200,7 +200,7 @@ int         pos_piece(t_coor_piece *piece)
         y = -1;
         piece->pos_stars[x] = (int *)malloc(sizeof(int) * piece->y_piece);
         while (head->piece[++y])
-            piece->pos_stars[x][y] = (head->piece[y] == '*') ? y : 0;
+            piece->pos_stars[x][y] = (head->piece[y] == '*') ? y: -1;
         head = head->next;
         x++;
     }
@@ -231,32 +231,16 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
         int y;
 
         x = 0;
-        ft_fprintf("pos_piece    = x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
-        ft_fprintf("pos_map    = x = %d, y = %d\n", fd, map.x_map, map.y_map);
-        ft_fprintf("\n", fd);
+        ft_fprintf("map_chaleur    = x = %d, y = %d\n", fd, map.x_map, map.y_map);
         ft_fprintf("\n", fd);
         while (x < map.x_map)
         {
             y = 0;
             while (y < map.y_map)
             {
-                ft_fprintf("%d", fd, map.pos_me[x][y]);
+                ft_fprintf("%d", fd, map.map_chaleur[x][y]);
                 if (y == map.y_map - 1)
                     ft_fprintf("\n", fd);
-                y++;
-            }
-            x++;
-        }
-        ft_fprintf("\n", fd);
-        ft_fprintf("\n", fd);
-        x = 0;
-        while (x < piece.x_piece)
-        {
-            y = 0;
-            while (y < piece.y_piece)
-            {
-                if (piece.pos_stars[x][y] != 0)
-                    ft_fprintf("pos_stars    = x = %d, y = %d\n", fd, x, piece.pos_stars[x][y]);
                 y++;
             }
             x++;
@@ -268,12 +252,26 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
             map.map = map.map->next;
         }
         ft_fprintf("\n", fd);
+        ft_fprintf("pos_piece    = x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
+        ft_fprintf("\n", fd);
         while (piece.piece)
         {
             ft_fprintf("%s\n", fd, piece.piece->piece);
             piece.piece = piece.piece->next;
         }
         ft_fprintf("\n", fd);
+        x = 0;
+        while (x < piece.x_piece)
+        {
+            y = 0;
+            while (y < piece.y_piece)
+            {
+                if (piece.pos_stars[x][y] != -1)
+                    ft_fprintf("pos_stars    = x = %d, y = %d\n", fd, x, piece.pos_stars[x][y]);
+                y++;
+            }
+            x++;
+        }
 }
 
 int         main(int argc, char **argv)
@@ -300,7 +298,7 @@ int         main(int argc, char **argv)
         if (etapes == 2)
         {
             print_fd(fd, map, piece);
-            // ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.pos_me[] - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+            // ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             // ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             etapes = 0;
             erase_list(&map, &piece);

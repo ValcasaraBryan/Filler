@@ -13,10 +13,13 @@
 #ifndef FILLER_H
 # define FILLER_H
 
-#include "libft/includes/libft.h"
-#include "libft/includes/get_next_line.h"
-#include "libft/includes/ft_printf.h"
-#include <stdio.h>
+# include "libft/includes/libft.h"
+# include "libft/includes/get_next_line.h"
+# include "libft/includes/ft_printf.h"
+# include <stdio.h>
+# define ME             0;
+# define ENNEMI         -1;
+# define POS_NULL       -2;
 
 typedef struct          s_map
 {
@@ -28,7 +31,7 @@ typedef struct          s_tailles_map
 {
     int                 x_map;
     int                 y_map;
-    int                 **pos_me;
+    int                 **map_chaleur;
     char                me;
     char                ennemi;
     struct  s_map       *map;
