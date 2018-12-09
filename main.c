@@ -234,7 +234,7 @@ int         val_player_fct(t_coor *map, int x, int y)
 }
 
 
-int         map_chaleur(t_coor *map)
+int         map_chaleur_horizontal(t_coor *map)
 {
     int     x;
     int     y;
@@ -253,6 +253,64 @@ int         map_chaleur(t_coor *map)
         while (++y < map->y_map)
             if (map->me_list[x][y] == y || map->ennemi_list[x][y] == y)
                 map->map_chaleur[x][y] = val_player_fct(map, x, y);
+    }
+    return (1);
+}
+
+int         chaleur_up(t_coor *map, int y)
+{
+    int     i;
+    int     x;
+
+    if (!map->map)
+        return (0);
+    i = -1;
+    while (++i < map->x_map)
+        if (map->me_list[i][y] == y || map->ennemi_list[i][y] == y)
+        {
+            x = i;
+            while (i-- > 0)
+                if (map->map_chaleur[i][y] == 0)
+                    map->map_chaleur[i][y] = x - i;
+            break;
+        }
+    return (1);
+}
+
+int         chaleur_down(t_coor *map, int y)
+{
+    int     i;
+    int     x;
+
+    if (!map->map)
+        return (0);
+    i = map->x_map;
+    while (--i)
+        if (map->me_list[i][y] == y || map->ennemi_list[i][y] == y)
+        {
+            x = i;
+            while (i++ < map->x_map)
+                if (map->map_chaleur[i][y] == 0)
+                    map->map_chaleur[i][y] = i - x;
+            break;
+        }
+    return (1);
+}
+
+int         map_chaleur_vertical(t_coor *map)
+{
+    int     x;
+    int     y;
+
+    if (!map->map_chaleur)
+        return (0);
+    y = -1;
+    while (++y < map->y_map)
+    {
+        x = -1;
+        chaleur_up(map, y);
+        chaleur_down(map, y);
+        while (++x < map->x_map);
     }
     return (1);
 }
@@ -285,6 +343,9 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
     {
         map->map = NULL;
         piece->piece = NULL;
+        map->map_chaleur = NULL;
+        map->me_list = NULL;
+        map->ennemi_list = NULL;
         map->x_map = 0;
         map->y_map = 0;
         map->me = (player == 1) ? 'O' : 'X';
@@ -397,7 +458,8 @@ int         main(int argc, char **argv)
         {
             tab_int(&map, map.me);
             tab_int(&map, map.ennemi);
-            map_chaleur(&map);
+            map_chaleur_horizontal(&map);
+            map_chaleur_vertical(&map);
         }
         else if (etapes == 2)
         {
