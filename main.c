@@ -183,30 +183,71 @@ int         tab_int(t_coor *map, char char_of_player)
     return (1);
 }
 
-int         map_chaleur(t_coor *map)
+int         chaleur_right(t_coor *map, int x, int y)
 {
-    t_map   *head;
-    int     x;
-    int     y;
+    int     i;
 
     if (!map->map)
         return (0);
-    head = map->map;
+    i = map->y_map;
+    while (i--)
+    {
+        if (i == map->me_list[x][i] || i == map->ennemi_list[x][i])
+            break;
+        if (i > y)
+            map->map_chaleur[x][i] = i - y;
+    }
+    return (i - y);
+}
+
+int         chaleur_left(t_coor *map, int x, int y)
+{
+    int     i;
+
+    if (!map->map)
+        return (0);
+    i = -1;
+    while (i < map->y_map)
+    {
+        i++;
+        if (i == map->me_list[x][i] || i == map->ennemi_list[x][i])
+        {
+            y = i;
+            while (--i >= 0)
+                map->map_chaleur[x][i] = y - i;
+            break;
+        }
+        map->map_chaleur[x][i] = y - i;
+    }
+    return (y - i);
+}
+
+int         map_chaleur(t_coor *map)
+{
+    int     x;
+    int     y;
+    int     val_player;
+
+    if (!map->map)
+        return (0);
     x = 0;
-    while (head)
+    while (x < map->x_map)
     {
         y = -1;
         map->map_chaleur[x] = (int *)malloc(sizeof(int) * map->y_map);
-        while (head->map[++y])
+        while (y++ < map->y_map)
         {
-            if (head->map[y] == map->me || head->map[y] == map->me + 32)
-                map->map_chaleur[x][y] = -1;
-            else if (head->map[y] == map->ennemi || head->map[y] == map->ennemi + 32)
-                map->map_chaleur[x][y] = -2;
-            else
-                map->map_chaleur[x][y] = 0;
+            if (map->me_list[x][y] == y)
+                val_player = -3;
+            else if (map->ennemi_list[x][y] == y)
+                val_player = -2;
+            if (map->me_list[x][y] == y || map->ennemi_list[x][y] == y)
+            {
+                chaleur_left(map, x, y);
+                map->map_chaleur[x][y] = val_player;
+                chaleur_right(map, x, y);
+            }
         }
-        head = head->next;
         x++;
     }
     return (1);
@@ -291,10 +332,10 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
             y = 0;
             while (y < map.y_map)
             {
-                ft_fprintf("%d", fd, map.map_chaleur[x][y]);
-                if (y == map.y_map - 1)
-                    ft_fprintf("\n", fd);
+                ft_fprintf("%3d", fd, map.map_chaleur[x][y]);
                 y++;
+                if (y == map.y_map)
+                    ft_fprintf("\n", fd);
             }
             x++;
         }
