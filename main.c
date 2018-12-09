@@ -183,44 +183,56 @@ int         tab_int(t_coor *map, char char_of_player)
     return (1);
 }
 
-int         chaleur_right(t_coor *map, int x, int y)
+int         chaleur_right(t_coor *map, int x)
 {
     int     i;
+    int     y;
 
     if (!map->map)
         return (0);
     i = map->y_map;
     while (i--)
-    {
         if (i == map->me_list[x][i] || i == map->ennemi_list[x][i])
+        {
+            y = i;
+            while (i++ < map->y_map)
+                map->map_chaleur[x][i] = i - y;
             break;
-        if (i > y)
-            map->map_chaleur[x][i] = i - y;
-    }
-    return (i - y);
+        }
+    return (1);
 }
 
-int         chaleur_left(t_coor *map, int x, int y)
+int         chaleur_left(t_coor *map, int x)
 {
     int     i;
+    int     y;
 
     if (!map->map)
         return (0);
     i = -1;
-    while (i < map->y_map)
-    {
-        i++;
-        if (i == map->me_list[x][i] || i == map->ennemi_list[x][i])
+    while (++i < map->y_map)
+        if (map->me_list[x][i] == i || map->ennemi_list[x][i] == i)
         {
             y = i;
-            while (--i >= 0)
+            while (i-- > 0)
                 map->map_chaleur[x][i] = y - i;
             break;
         }
-        map->map_chaleur[x][i] = y - i;
-    }
-    return (y - i);
+    return (1);
 }
+
+int         val_player_fct(t_coor *map, int x, int y)
+{
+    if (!map->map)
+        return (-1);
+    if (map->me_list[x][y] == y)
+        return (-3);
+    else if (map->ennemi_list[x][y] == y)
+        return (-2);
+    else
+        return (0);
+}
+
 
 int         map_chaleur(t_coor *map)
 {
@@ -230,25 +242,17 @@ int         map_chaleur(t_coor *map)
 
     if (!map->map)
         return (0);
-    x = 0;
-    while (x < map->x_map)
+    x = -1;
+    while (++x < map->x_map)
     {
         y = -1;
         map->map_chaleur[x] = (int *)malloc(sizeof(int) * map->y_map);
-        while (y++ < map->y_map)
-        {
-            if (map->me_list[x][y] == y)
-                val_player = -3;
-            else if (map->ennemi_list[x][y] == y)
-                val_player = -2;
+        ft_bzero(map->map_chaleur[x], map->y_map);
+        chaleur_left(map, x);
+        chaleur_right(map, x);
+        while (++y < map->y_map)
             if (map->me_list[x][y] == y || map->ennemi_list[x][y] == y)
-            {
-                chaleur_left(map, x, y);
-                map->map_chaleur[x][y] = val_player;
-                chaleur_right(map, x, y);
-            }
-        }
-        x++;
+                map->map_chaleur[x][y] = val_player_fct(map, x, y);
     }
     return (1);
 }
