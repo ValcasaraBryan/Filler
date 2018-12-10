@@ -256,7 +256,7 @@ int         chaleur_down(t_coor *map, int y)
         return (0);
     i = map->x_map;
     while (--i)
-        if (map->me_list[i][y] == y)
+        if (map->ennemi_list[i][y] == y)
         {
             x = i;
             while (i++ < map->x_map)
@@ -281,7 +281,7 @@ int         chaleur_up(t_coor *map, int y)
         return (0);
     i = -1;
     while (++i < map->x_map)
-        if (map->me_list[i][y] == y)
+        if (map->ennemi_list[i][y] == y)
         {
             x = i;
             while (i-- > 0)
@@ -306,7 +306,7 @@ int         chaleur_right(t_coor *map, int x)
         return (0);
     i = map->y_map;
     while (i--)
-        if (i == map->me_list[x][i])
+        if (i == map->ennemi_list[x][i])
         {
             y = i;
             while (i++ < map->y_map)
@@ -329,7 +329,7 @@ int         chaleur_left(t_coor *map, int x)
         return (0);
     i = -1;
     while (++i < map->y_map)
-        if (map->me_list[x][i] == i)
+        if (map->ennemi_list[x][i] == i)
         {
             y = i;
             while (i-- > 0)
