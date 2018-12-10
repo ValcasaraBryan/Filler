@@ -183,6 +183,120 @@ int         tab_int(t_coor *map, char char_of_player)
     return (1);
 }
 
+int         val_around(t_coor *map, int val, int x, int y)
+{
+    int     tmp;
+
+    
+    val = (y - 1 >= 0 && (tmp = map->map_chaleur[x][y - 1]) > 0 && tmp <= val) ? tmp : val;
+    val = (y + 1 < map->y_map && (tmp = map->map_chaleur[x][y + 1]) > 0 && tmp <= val) ? tmp : val;
+    val = (x - 1 >= 0 && (tmp = map->map_chaleur[x - 1][y]) > 0 && tmp <= val) ? tmp : val;
+    val = (x + 1 < map->x_map && (tmp = map->map_chaleur[x + 1][y]) > 0 && tmp <= val) ? tmp : val;
+    return (val);
+}
+
+int         check_position_right_down(t_coor *map)
+{
+    int     x;
+    int     y;
+    int     val;
+
+    if (!map->map_chaleur)
+        return (0);
+    x = -1;
+    while (++x < map->x_map)
+    {
+        y = -1;
+        while (++y < map->y_map)
+        {
+            val = map->y_map * map->x_map;
+            if (map->map_chaleur[x][y] == 0)
+            {
+                val = val_around(map, val, x, y);
+                if (val > 0 && val < map->y_map * map->x_map)
+                    map->map_chaleur[x][y] = val + 1;
+            }
+        }
+    }
+    return (0);
+}
+
+int         check_position_left_up(t_coor *map)
+{
+    int     x;
+    int     y;
+    int     val;
+
+    if (!map->map_chaleur)
+        return (0);
+    x = map->x_map;
+    while (--x)
+    {
+        y = map->y_map;
+        while (--y)
+        {
+            val = map->y_map * map->x_map;
+            if (map->map_chaleur[x][y] == 0)
+            {
+                val = val_around(map, val, x, y);
+                if (val > 0 && val < map->y_map * map->x_map)
+                    map->map_chaleur[x][y] = val + 1;
+            }
+        }
+    }
+    return (0);
+}
+
+int         chaleur_down(t_coor *map, int y)
+{
+    int     i;
+    int     x;
+
+    if (!map->map)
+        return (0);
+    i = map->x_map;
+    while (--i)
+        if (map->me_list[i][y] == y)
+        {
+            x = i;
+            while (i++ < map->x_map)
+                if (map->map_chaleur[i][y] == 1)
+                    x = i - 1;
+                else if (map->map_chaleur[i][y] == 0)
+                {
+                    map->map_chaleur[i][y] = i - x;
+                    break;
+                }
+            break;
+        }
+    return (1);
+}
+
+int         chaleur_up(t_coor *map, int y)
+{
+    int     i;
+    int     x;
+
+    if (!map->map)
+        return (0);
+    i = -1;
+    while (++i < map->x_map)
+        if (map->me_list[i][y] == y)
+        {
+            x = i;
+            while (i-- > 0)
+                if (map->map_chaleur[i][y] == 1)
+                    x = i + 1;
+                else if (map->map_chaleur[i][y] == 0)
+                {
+                    map->map_chaleur[i][y] = x - i;
+                    break;
+                }
+            break;
+        }
+    return (1);
+}
+
 int         chaleur_right(t_coor *map, int x)
 {
     int     i;
@@ -192,11 +306,15 @@ int         chaleur_right(t_coor *map, int x)
         return (0);
     i = map->y_map;
     while (i--)
-        if (i == map->me_list[x][i] || i == map->ennemi_list[x][i])
+        if (i == map->me_list[x][i])
         {
             y = i;
             while (i++ < map->y_map)
-                map->map_chaleur[x][i] = i - y;
+                if (map->map_chaleur[x][i] == 0)
+                {
+                    map->map_chaleur[x][i] = i - y;
+                    break;
+                }
             break;
         }
     return (1);
@@ -211,11 +329,15 @@ int         chaleur_left(t_coor *map, int x)
         return (0);
     i = -1;
     while (++i < map->y_map)
-        if (map->me_list[x][i] == i || map->ennemi_list[x][i] == i)
+        if (map->me_list[x][i] == i)
         {
             y = i;
             while (i-- > 0)
-                map->map_chaleur[x][i] = y - i;
+                if (map->map_chaleur[x][i] == 0)
+                {
+                    map->map_chaleur[x][i] = y - i;
+                    break;
+                }
             break;
         }
     return (1);
@@ -232,7 +354,6 @@ int         val_player_fct(t_coor *map, int x, int y)
     else
         return (0);
 }
-
 
 int         map_chaleur_horizontal(t_coor *map)
 {
@@ -254,46 +375,6 @@ int         map_chaleur_horizontal(t_coor *map)
             if (map->me_list[x][y] == y || map->ennemi_list[x][y] == y)
                 map->map_chaleur[x][y] = val_player_fct(map, x, y);
     }
-    return (1);
-}
-
-int         chaleur_up(t_coor *map, int y)
-{
-    int     i;
-    int     x;
-
-    if (!map->map)
-        return (0);
-    i = -1;
-    while (++i < map->x_map)
-        if (map->me_list[i][y] == y || map->ennemi_list[i][y] == y)
-        {
-            x = i;
-            while (i-- > 0)
-                if (map->map_chaleur[i][y] == 0)
-                    map->map_chaleur[i][y] = x - i;
-            break;
-        }
-    return (1);
-}
-
-int         chaleur_down(t_coor *map, int y)
-{
-    int     i;
-    int     x;
-
-    if (!map->map)
-        return (0);
-    i = map->x_map;
-    while (--i)
-        if (map->me_list[i][y] == y || map->ennemi_list[i][y] == y)
-        {
-            x = i;
-            while (i++ < map->x_map)
-                if (map->map_chaleur[i][y] == 0)
-                    map->map_chaleur[i][y] = i - x;
-            break;
-        }
     return (1);
 }
 
@@ -459,7 +540,9 @@ int         main(int argc, char **argv)
             tab_int(&map, map.me);
             tab_int(&map, map.ennemi);
             map_chaleur_horizontal(&map);
-            map_chaleur_vertical(&map);
+            map_chaleur_vertical(&map);          
+            check_position_right_down(&map);
+            check_position_left_up(&map);
         }
         else if (etapes == 2)
         {
