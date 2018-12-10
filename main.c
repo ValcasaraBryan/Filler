@@ -230,10 +230,10 @@ int         check_position_left_up(t_coor *map)
     if (!map->map_chaleur)
         return (0);
     x = map->x_map;
-    while (--x)
+    while (--x >= 0)
     {
         y = map->y_map;
-        while (--y)
+        while (--y >= 0)
         {
             val = map->y_map * map->x_map;
             if (map->map_chaleur[x][y] == 0)
