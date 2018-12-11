@@ -52,6 +52,7 @@ typedef struct          s_tailles_piece
     int                 x_best_pos;
     int                 y_best_pos;
     int                 **pos_stars;
+    int                 **final_pos;
     struct s_piece      *piece;
 }                       t_coor_piece;
 

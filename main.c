@@ -408,7 +408,7 @@ int         best_position(t_coor *map, int x, int y, int val)
     return (val);
 }
 
-int         check_around_piece(t_coor *map, t_coor_piece *piece)
+int         check_around_pos(t_coor *map, t_coor_piece *piece)
 {
     int     i;
     int     x;
@@ -432,6 +432,52 @@ int         check_around_piece(t_coor *map, t_coor_piece *piece)
                 best_pos = i;
             }
     }
+    return (1);
+}
+
+int         next_pos_stars(t_coor *map, t_coor_piece *piece)
+{
+    int     x;
+    int     y;
+
+    if (!(piece->pos_stars) || (!(piece->final_pos)))
+        return (-1);
+    x = -1;
+    while (++x < piece->x_piece)
+    {
+        y = -1;
+        while (++y < piece->y_piece)
+            if (piece->pos_stars[x][y] != -1)
+                if (piece->x_best_pos - x < map->x_map && piece->y_best_pos - y < map->y_map)
+                    if (piece->x_best_pos - x >= 0 && piece->y_best_pos - y >= 0)
+                        piece->final_pos[piece->x_best_pos - x][piece->y_best_pos - y] = piece->y_best_pos - y;
+    }
+    return (1);
+}
+
+int         check_pos_final(t_coor *map, t_coor_piece *piece)
+{
+    
+}
+
+int         final_pos_piece(t_coor *map, t_coor_piece *piece)
+{
+    int     x;
+    int     y;
+    int     y_piece;
+
+    if (!(map->map_chaleur) || !(piece->pos_stars))
+        return (0);
+    x = -1;
+    piece->final_pos = (int **)malloc(sizeof(int *) * map->x_map);
+    while (++x < map->x_map)
+    {
+        y = -1;
+        piece->final_pos[x] = (int *)malloc(sizeof(int) * map->y_map);
+        while (++y < map->y_map)
+            piece->final_pos[x][y] = -1;
+    }
+    next_pos_stars(map, piece);
     return (1);
 }
 
@@ -555,6 +601,21 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
             }
             x++;
         }
+        x = 0;
+        ft_fprintf("\n", fd);
+        ft_fprintf("best_pos    = x = %d, y = %d\n", fd, piece.x_best_pos, piece.y_best_pos);
+        ft_fprintf("\n", fd);
+        while (x < map.x_map)
+        {
+            y = 0;
+            while (y < map.y_map)
+            {
+                if (piece.final_pos[x][y] != -1)
+                    ft_fprintf("final_pos    = x = %d, y = %d\n", fd, x, piece.final_pos[x][y]);
+                y++;
+            }
+            x++;
+        }
 }
 
 int         main(int argc, char **argv)
@@ -588,9 +649,10 @@ int         main(int argc, char **argv)
         else if (etapes == 2)
         {
             pos_piece(&piece);
+            check_around_pos(&map, &piece);
+            final_pos_piece(&map, &piece);
+            
             print_fd(fd, map, piece);
-            check_around_piece(&map, &piece);
-            ft_fprintf("x = %d, y = %d\n", 2, piece.x_best_pos, piece.y_best_pos);
             // ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             // ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             etapes = 0;
