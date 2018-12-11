@@ -391,7 +391,46 @@ int         map_chaleur_vertical(t_coor *map)
         x = -1;
         chaleur_up(map, y);
         chaleur_down(map, y);
-        while (++x < map->x_map);
+    }
+    return (1);
+}
+
+int         best_position(t_coor *map, int x, int y, int val)
+{
+    int     tmp;
+
+    if (!(map->map_chaleur))
+        return (-1);
+    val = (y + 1 < map->y_map && (tmp = map->map_chaleur[x][y + 1]) && tmp > 0 && val > tmp) ? tmp : val;
+    val = (y - 1 >= 0 && (tmp = map->map_chaleur[x][y - 1]) && tmp > 0 && val > tmp) ? tmp : val;
+    val = (x + 1 < map->x_map && (tmp = map->map_chaleur[x + 1][y]) && tmp > 0 && val > tmp) ? tmp : val;
+    val = (x - 1 >= 0 && (tmp = map->map_chaleur[x - 1][y]) && tmp > 0 && val > tmp) ? tmp : val;
+    return (val);
+}
+
+int         check_around_piece(t_coor *map, t_coor_piece *piece)
+{
+    int     i;
+    int     x;
+    int     y;
+    int     best_pos;
+
+    if (!(map->map_chaleur) || !(piece->pos_stars))
+        return (0);
+    x = -1;
+    best_pos = map->x_map * map->y_map;
+    while (++x < map->x_map)
+    {
+        y = -1;
+        while (++y < map->y_map)
+            if (map->me_list[x][y] != -1)
+            {
+                piece->y_best_pos = ((i = best_position(map, x, y, best_pos))
+                    < best_pos) ? y : piece->y_best_pos;
+                piece->x_best_pos = ((i = best_position(map, x, y, best_pos))
+                    < best_pos) ? x : piece->x_best_pos;
+                best_pos = i;
+            }
     }
     return (1);
 }
@@ -433,6 +472,8 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
         map->ennemi = (player == 1) ? 'X' : 'O';
         piece->x_piece = 0;
         piece->y_piece = 0;
+        piece->x_best_pos = 0;
+        piece->y_best_pos = 0;
         return (1);
     }
     else
@@ -548,6 +589,8 @@ int         main(int argc, char **argv)
         {
             pos_piece(&piece);
             print_fd(fd, map, piece);
+            check_around_piece(&map, &piece);
+            ft_fprintf("x = %d, y = %d\n", 2, piece.x_best_pos, piece.y_best_pos);
             // ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             // ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
             etapes = 0;
