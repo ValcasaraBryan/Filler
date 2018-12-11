@@ -440,7 +440,7 @@ int         next_pos_stars(t_coor *map, t_coor_piece *piece)
     int     x;
     int     y;
 
-    if (!(piece->pos_stars) || (!(piece->final_pos)))
+    if (!(piece->pos_stars) || !(piece->final_pos))
         return (-1);
     x = -1;
     while (++x < piece->x_piece)
@@ -455,9 +455,63 @@ int         next_pos_stars(t_coor *map, t_coor_piece *piece)
     return (1);
 }
 
+int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y)
+{
+    int     x_piece;
+    int     y_piece;
+    int     val;
+    int     tmp;
+
+    if (!(map->map_chaleur) || !(piece->final_pos))
+        return (-1);
+    x_piece = -1;
+    val = map->x_map * map->y_map;
+    while (++x_piece < piece->x_piece)
+    {
+        y_piece = -1;
+        while (++y_piece < piece->y_piece)
+        {
+            if (piece->pos_stars[x_piece][y_piece] != -1)
+            {
+                if (map->map_chaleur[x + x_piece][y + y_piece] < val)
+                   tmp = map->map_chaleur[x + x_piece][y + y_piece];
+                if (tmp > 0 && tmp < val)
+                   val = tmp;
+            }
+        }
+    }
+    return (val);
+}
+
 int         check_pos_final(t_coor *map, t_coor_piece *piece)
 {
-    
+    int     x;
+    int     y;
+    int     val;
+    int     tmp;
+
+    if (!(map->map_chaleur) || !(piece->final_pos))
+        return (-1);
+    x = -1;
+    val = map->x_map * map->y_map;
+    while (++x < map->x_map)
+    {
+        y = -1;
+        while (++y < map->y_map)
+        {
+            if (piece->final_pos[x][y] != -1)
+            {
+                tmp = check_chaleur_piece(map, piece, x, y);
+                if (tmp < val)
+                {
+                    val = tmp;
+                    piece->x_final_pos = x;
+                    piece->y_final_pos = y;
+                }
+            }
+        }
+    }
+    return (0);
 }
 
 int         final_pos_piece(t_coor *map, t_coor_piece *piece)
@@ -520,6 +574,8 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
         piece->y_piece = 0;
         piece->x_best_pos = 0;
         piece->y_best_pos = 0;
+        piece->x_final_pos = 0;
+        piece->y_final_pos = 0;
         return (1);
     }
     else
@@ -616,6 +672,9 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
             }
             x++;
         }
+        ft_fprintf("\n", fd);
+        ft_fprintf("better_pos_start  = x = %d, y = %d\n", fd, piece.x_final_pos, piece.y_final_pos);
+
 }
 
 int         main(int argc, char **argv)
@@ -651,10 +710,10 @@ int         main(int argc, char **argv)
             pos_piece(&piece);
             check_around_pos(&map, &piece);
             final_pos_piece(&map, &piece);
-            
+            check_pos_final(&map, &piece);
             print_fd(fd, map, piece);
-            // ft_fprintf("<got (O): [%d, %d]\n\n", fd, map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
-            // ft_printf("%d %d\n",  map.x_pos_me - piece.x_pos_stars, map.y_pos_me - piece.y_pos_stars);
+            ft_fprintf("<got (O): [%d, %d]\n\n", fd, piece.x_final_pos, piece.y_final_pos);
+            ft_printf("%d %d\n", piece.x_final_pos, piece.y_final_pos);
             etapes = 0;
             erase_list(&map, &piece);
         }

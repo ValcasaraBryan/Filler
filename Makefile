@@ -37,7 +37,7 @@ comp :
 
 exe : comp
 	@echo "" > res
-	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | more
+	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler
 
 std_2 : comp
 	@echo "" > res
