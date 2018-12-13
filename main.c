@@ -175,8 +175,10 @@ int         tab_int(t_coor *map, char char_of_player)
         tab[j] = (int *)malloc(sizeof(int) * map->y_map);
         i = -1;
         while (head->map[++i])
-            tab[j][i] = (head->map[i] == char_of_player
-            || head->map[i] == char_of_player + 32) ? i : -1;
+        {
+            tab[j][i] = (head->map[i] == char_of_player) ? i : -1;
+            tab[j][i] = (head->map[i] == char_of_player + 32) ? -4 : tab[j][i];
+        }
         j++;
         head = head->next;
     }
@@ -247,6 +249,60 @@ int         check_position_left_up(t_coor *map)
     return (0);
 }
 
+
+int         check_position_right_up(t_coor *map)
+{
+    int     x;
+    int     y;
+    int     val;
+
+    if (!map->map_chaleur)
+        return (0);
+    x = map->x_map;
+    while (--x >= 0)
+    {
+        y = -1;
+        while (++y < map->y_map)
+        {
+            val = map->y_map * map->x_map;
+            if (map->map_chaleur[x][y] == 0)
+            {
+                val = val_around(map, val, x, y);
+                if (val > 0 && val < map->y_map * map->x_map)
+                    map->map_chaleur[x][y] = val + 1;
+            }
+        }
+    }
+    return (0);
+}
+
+int         check_position_left_down(t_coor *map)
+{
+    int     x;
+    int     y;
+    int     val;
+
+    if (!map->map_chaleur)
+        return (0);
+    x = -1;
+    while (++x < map->x_map)
+    {
+        y = map->y_map;
+        while (--y >= 0)
+        {
+            val = map->y_map * map->x_map;
+            if (map->map_chaleur[x][y] == 0)
+            {
+                val = val_around(map, val, x, y);
+                if (val > 0 && val < map->y_map * map->x_map)
+                    map->map_chaleur[x][y] = val + 1;
+            }
+        }
+    }
+    return (0);
+}
+
+
 int         chaleur_down(t_coor *map, int y)
 {
     int     i;
@@ -260,11 +316,22 @@ int         chaleur_down(t_coor *map, int y)
         {
             x = i;
             while (i++ < map->x_map)
-                if (map->map_chaleur[i][y] == 1)
-                    x = i - 1;
+                if (map->map_chaleur[i][y] == 2)
+                    map->map_chaleur[i][y] = 2;
                 else if (map->map_chaleur[i][y] == 0)
                 {
-                    map->map_chaleur[i][y] = i - x;
+                    map->map_chaleur[i][y] = i - x + 1;
+                    break;
+                }
+            break;
+        }
+        else if (map->ennemi_list[i][y] == -4)
+        {
+            x = i;
+            while (i++ < map->x_map)
+                if (map->map_chaleur[i][y] == 0)
+                {
+                    map->map_chaleur[i][y] = 1;
                     break;
                 }
             break;
@@ -285,11 +352,20 @@ int         chaleur_up(t_coor *map, int y)
         {
             x = i;
             while (i-- > 0)
-                if (map->map_chaleur[i][y] == 1)
-                    x = i + 1;
-                else if (map->map_chaleur[i][y] == 0)
+                if (map->map_chaleur[i][y] == 0)
                 {
-                    map->map_chaleur[i][y] = x - i;
+                    map->map_chaleur[i][y] = x - i + 1;
+                    break;
+                }
+            break;
+        }
+        else if (map->ennemi_list[i][y] == -4)
+        {
+            x = i;
+            while (i-- > 0)
+                if (map->map_chaleur[i][y] == 0)
+                {
+                    map->map_chaleur[i][y] = 1;
                     break;
                 }
             break;
@@ -306,13 +382,24 @@ int         chaleur_right(t_coor *map, int x)
         return (0);
     i = map->y_map;
     while (i--)
-        if (i == map->ennemi_list[x][i])
+        if (map->ennemi_list[x][i] == i)
         {
             y = i;
             while (i++ < map->y_map)
                 if (map->map_chaleur[x][i] == 0)
                 {
-                    map->map_chaleur[x][i] = i - y;
+                    map->map_chaleur[x][i] = i - y + 1;
+                    break;
+                }
+            break;
+        }
+        else if (map->ennemi_list[x][i] == -4)
+        {
+            y = i;
+            while (i++ < map->y_map)
+                if (map->map_chaleur[x][i] == 0)
+                {
+                    map->map_chaleur[x][i] = 1;
                     break;
                 }
             break;
@@ -335,7 +422,18 @@ int         chaleur_left(t_coor *map, int x)
             while (i-- > 0)
                 if (map->map_chaleur[x][i] == 0)
                 {
-                    map->map_chaleur[x][i] = y - i;
+                    map->map_chaleur[x][i] = y - i + 1;
+                    break;
+                }
+            break;
+        }
+        else if (map->ennemi_list[x][i] == -4)
+        {
+            y = i;
+            while (i-- > 0)
+                if (map->map_chaleur[x][i] == 0)
+                {
+                    map->map_chaleur[x][i] = 1;
                     break;
                 }
             break;
@@ -351,6 +449,8 @@ int         val_player_fct(t_coor *map, int x, int y)
         return (-3);
     else if (map->ennemi_list[x][y] == y)
         return (-2);
+    else if (map->ennemi_list[x][y] == -4)
+        return (-4);
     else
         return (0);
 }
@@ -372,7 +472,7 @@ int         map_chaleur_horizontal(t_coor *map)
         chaleur_left(map, x);
         chaleur_right(map, x);
         while (++y < map->y_map)
-            if (map->me_list[x][y] == y || map->ennemi_list[x][y] == y)
+            if (map->me_list[x][y] == y || map->ennemi_list[x][y] == y || map->ennemi_list[x][y] == -4)
                 map->map_chaleur[x][y] = val_player_fct(map, x, y);
     }
     return (1);
@@ -423,7 +523,7 @@ int         check_around_pos(t_coor *map, t_coor_piece *piece)
     {
         y = -1;
         while (++y < map->y_map)
-            if (map->me_list[x][y] != -1)
+            if (map->me_list[x][y] != -1 && piece->last_best_pos[x][y] == -1)
             {
                 piece->y_best_pos = ((i = best_position(map, x, y, best_pos))
                     < best_pos) ? y : piece->y_best_pos;
@@ -435,6 +535,46 @@ int         check_around_pos(t_coor *map, t_coor_piece *piece)
     return (1);
 }
 
+int         check_around_best_pos(t_coor *map, t_coor_piece *piece)
+{
+    int     x;
+    int     x_stars;
+    int     y;
+    int     y_stars;
+    int     val_pos;
+
+    if (!(piece->final_pos) || !(piece->pos_stars) || !(map->map_chaleur))
+        return (0);
+    x = -1;
+    val_pos = 0;
+    while (++x < map->x_map)
+    {
+        y = -1;
+        while (++y < map->y_map) // check la position final_pos en fonction de la best_pos_me
+        {
+            if (piece->final_pos[x][y] != -1)
+            {
+                x_stars = -1;
+                while (++x_stars < piece->x_piece) // check tout les position de stars en fonction des final_pos
+                {
+                    y_stars = -1;
+                    while (++y_stars < piece->y_piece)
+                    {
+                        if (map->map_chaleur[x_stars + x][y_stars + y] == -3)
+                        {
+                            val_pos++;
+                            if (val_pos > 1)    // si il y a plus d'une position "me" la position n'est pas valide
+                                piece->final_pos[x][y] = -1;
+                        }
+                        else if (map->map_chaleur[x_stars + x][y_stars + y] == -2)
+                            piece->final_pos[x][y] = -1;    // si il y a une seul position "ennemi" la position n'est pas valide
+                    }
+                }
+            }
+        }
+    }
+    return (1);
+}
 int         next_pos_stars(t_coor *map, t_coor_piece *piece)
 {
     int     x;
@@ -447,7 +587,7 @@ int         next_pos_stars(t_coor *map, t_coor_piece *piece)
     {
         y = -1;
         while (++y < piece->y_piece)
-            if (piece->pos_stars[x][y] != -1)
+            if (piece->pos_stars[x][y] != -1 && piece->last_best_pos[x][y] == -1)
                 if (piece->x_best_pos - x < map->x_map && piece->y_best_pos - y < map->y_map)
                     if (piece->x_best_pos - x >= 0 && piece->y_best_pos - y >= 0)
                         piece->final_pos[piece->x_best_pos - x][piece->y_best_pos - y] = piece->y_best_pos - y;
@@ -462,7 +602,7 @@ int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y)
     int     val;
     int     tmp;
 
-    if (!(map->map_chaleur) || !(piece->final_pos))
+    if (!(map->map_chaleur) || !(piece->pos_stars))
         return (-1);
     x_piece = -1;
     val = map->x_map * map->y_map;
@@ -475,6 +615,8 @@ int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y)
             {
                 if (map->map_chaleur[x + x_piece][y + y_piece] < val)
                    tmp = map->map_chaleur[x + x_piece][y + y_piece];
+                if (tmp == -4 || tmp == -2)
+                    return (-1);
                 if (tmp > 0 && tmp < val)
                    val = tmp;
             }
@@ -490,7 +632,7 @@ int         check_pos_final(t_coor *map, t_coor_piece *piece)
     int     val;
     int     tmp;
 
-    if (!(map->map_chaleur) || !(piece->final_pos))
+    if (!(map->map_chaleur) || !(piece->final_pos) || !(map->me_list))
         return (-1);
     x = -1;
     val = map->x_map * map->y_map;
@@ -499,10 +641,17 @@ int         check_pos_final(t_coor *map, t_coor_piece *piece)
         y = -1;
         while (++y < map->y_map)
         {
-            if (piece->final_pos[x][y] != -1)
+            if (piece->final_pos[x][y] != -1 && piece->last_best_pos[x][y] == -1)
             {
                 tmp = check_chaleur_piece(map, piece, x, y);
-                if (tmp < val)
+                if (tmp == -1)
+                {
+                    piece->last_best_pos[x][y] = piece->final_pos[x][y];
+                    piece->x_final_pos = -1;
+                    piece->y_final_pos = -1;
+                    return (-1);
+                }
+                else if (tmp < val)
                 {
                     val = tmp;
                     piece->x_final_pos = x;
@@ -511,17 +660,33 @@ int         check_pos_final(t_coor *map, t_coor_piece *piece)
             }
         }
     }
-    return (0);
+    return (1);
+}
+
+int         init_last_best_pos(t_coor *map, t_coor_piece *piece)
+{
+    int     x;
+    int     y;
+
+    if (!(map->map_chaleur) || !(piece->pos_stars))
+        return (0);
+    x = -1;
+    piece->last_best_pos = (int **)malloc(sizeof(int *) * map->x_map);
+    while (++x < map->x_map)
+    {
+        y = -1;
+        piece->last_best_pos[x] = (int *)malloc(sizeof(int) * map->y_map);
+        while (++y < map->y_map)
+            piece->last_best_pos[x][y] = -1;
+    }
+    return (1);
 }
 
 int         final_pos_piece(t_coor *map, t_coor_piece *piece)
 {
     int     x;
     int     y;
-    int     y_piece;
 
-    if (!(map->map_chaleur) || !(piece->pos_stars))
-        return (0);
     x = -1;
     piece->final_pos = (int **)malloc(sizeof(int *) * map->x_map);
     while (++x < map->x_map)
@@ -531,7 +696,6 @@ int         final_pos_piece(t_coor *map, t_coor_piece *piece)
         while (++y < map->y_map)
             piece->final_pos[x][y] = -1;
     }
-    next_pos_stars(map, piece);
     return (1);
 }
 
@@ -566,16 +730,16 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
         map->map_chaleur = NULL;
         map->me_list = NULL;
         map->ennemi_list = NULL;
-        map->x_map = 0;
-        map->y_map = 0;
+        map->x_map = -1;
+        map->y_map = -1;
         map->me = (player == 1) ? 'O' : 'X';
         map->ennemi = (player == 1) ? 'X' : 'O';
-        piece->x_piece = 0;
-        piece->y_piece = 0;
-        piece->x_best_pos = 0;
-        piece->y_best_pos = 0;
-        piece->x_final_pos = 0;
-        piece->y_final_pos = 0;
+        piece->x_piece = -1;
+        piece->y_piece = -1;
+        piece->x_best_pos = -1;
+        piece->y_best_pos = -1;
+        piece->x_final_pos = -1;
+        piece->y_final_pos = -1;
         return (1);
     }
     else
@@ -590,90 +754,104 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
         x = 0;
         // ft_fprintf("map_chaleur     = x = %d, y = %d\n", fd, map.x_map, map.y_map);
         // ft_fprintf("\n", fd);
-        // while (x < map.x_map)
-        // {
-            // y = 0;
-            // while (y < map.y_map)
-            // {
-                // if (map.me_list[x][y] != -1)
-                    // // ft_fprintf("me_list         = x = %d, y = %d\n", fd, x, map.me_list[x][y]);
-                // y++;
-            // }
-            // x++;
-        // }
-        // x = 0;
-        // ft_fprintf("\n", fd);
-        // while (x < map.x_map)
-        // {
-            // y = 0;
-            // while (y < map.y_map)
-            // {
-                // if (map.ennemi_list[x][y] != -1)
-                    // // ft_fprintf("ennemi_list     = x = %d, y = %d\n", fd, x, map.ennemi_list[x][y]);
-                // y++;
-            // }
-            // x++;
-        // }
-        // x = 0;
-        // ft_fprintf("\n", fd);
         while (x < map.x_map)
         {
             y = 0;
             while (y < map.y_map)
             {
-                ft_fprintf("%3d", fd, map.map_chaleur[x][y]);
+                if (map.me_list[x][y] != -1)
+                    ft_fprintf("me_list         = x = %d, y = %d\n", fd, x, map.me_list[x][y]);
                 y++;
-                if (y == map.y_map)
-                    ft_fprintf("\n", fd);
             }
             x++;
         }
+        x = 0;
+        ft_fprintf("\n", fd);
+        while (x < map.x_map)
+        {
+            y = 0;
+            while (y < map.y_map)
+            {
+                if (map.ennemi_list[x][y] > -1)
+                    ft_fprintf("ennemi_list     = x = %d, y = %d\n", fd, x, map.ennemi_list[x][y]);
+                else if (map.ennemi_list[x][y] == -4)
+                    ft_fprintf("ennemi_list     = x = %d, y = %d = %d\n", fd, x, y, map.ennemi_list[x][y]);
+                y++;
+            }
+            x++;
+        }
+        // x = 0;
+        // ft_fprintf("\n", fd);
+        // while (x < map.x_map)
+        // {
+            // y = 0;
+            // while (y < map.y_map)
+            // {
+                // ft_fprintf("%3d", fd, map.map_chaleur[x][y]);
+                // y++;
+                // if (y == map.y_map)
+                    // ft_fprintf("\n", fd);
+            // }
+            // x++;
+        // }
 
         ft_fprintf("\n", fd);
-        // while (map.map)
-        // {
-            // ft_fprintf("%s\n", fd, map.map->map);
-            // map.map = map.map->next;
-        // }
-        // ft_fprintf("\n", fd);
-        // ft_fprintf("\n", fd);
-        // ft_fprintf("pos_piece    = x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
-        // ft_fprintf("\n", fd);
+        while (map.map)
+        {
+            ft_fprintf("%s\n", fd, map.map->map);
+            map.map = map.map->next;
+        }
+        ft_fprintf("\n", fd);
+        ft_fprintf("\n", fd);
+        ft_fprintf("pos_piece    = x = %d, y = %d\n", fd, piece.x_piece, piece.y_piece);
+        ft_fprintf("\n", fd);
         while (piece.piece)
         {
             ft_fprintf("%s\n", fd, piece.piece->piece);
             piece.piece = piece.piece->next;
         }
         ft_fprintf("\n", fd);
-        // x = 0;
-        // while (x < piece.x_piece)
-        // {
-            // y = 0;
-            // while (y < piece.y_piece)
-            // {
-                // if (piece.pos_stars[x][y] != -1)
-                    // ft_fprintf("pos_stars    = x = %d, y = %d\n", fd, x, piece.pos_stars[x][y]);
-                // y++;
-            // }
-            // x++;
-        // }
-        // x = 0;
-        // ft_fprintf("\n", fd);
-        // ft_fprintf("best_pos    = x = %d, y = %d\n", fd, piece.x_best_pos, piece.y_best_pos);
-        // ft_fprintf("\n", fd);
-        // while (x < map.x_map)
-        // {
-            // y = 0;
-            // while (y < map.y_map)
-            // {
-                // if (piece.final_pos[x][y] != -1)
-                    // ft_fprintf("final_pos    = x = %d, y = %d\n", fd, x, piece.final_pos[x][y]);
-                // y++;
-            // }
-            // x++;
-        // }
-        // ft_fprintf("\n", fd);
-        // ft_fprintf("better_pos_start  = x = %d, y = %d\n", fd, piece.x_final_pos, piece.y_final_pos);
+        x = 0;
+        while (x < piece.x_piece)
+        {
+            y = 0;
+            while (y < piece.y_piece)
+            {
+                if (piece.pos_stars[x][y] != -1)
+                    ft_fprintf("pos_stars    = x = %d, y = %d\n", fd, x, piece.pos_stars[x][y]);
+                y++;
+            }
+            x++;
+        }
+        x = 0;
+        ft_fprintf("\n", fd);
+        ft_fprintf("best_pos_me    = x = %d, y = %d\n", fd, piece.x_best_pos, piece.y_best_pos);
+        ft_fprintf("\n", fd);
+        while (x < map.x_map)
+        {
+            y = 0;
+            while (y < map.y_map)
+            {
+                if (piece.final_pos[x][y] != -1)
+                    ft_fprintf("final_pos[x][y]  = x = %d, y = %d | %d\n", fd, x, piece.final_pos[x][y], map.map_chaleur[x][y]);
+                y++;
+            }
+            x++;
+        }
+        ft_fprintf("\n", fd);
+        x = 0;
+        while (x < map.x_map)
+        {
+            y = 0;
+            while (y < map.y_map)
+            {
+                if (piece.last_best_pos[x][y] != -1)
+                    ft_fprintf("last_best_pos = x = %d, y = %d\n", fd, x, piece.last_best_pos[x][y]);
+                y++;
+            }
+            x++;
+        }
+        ft_fprintf("final_pos  = x = %d, y = %d\n", fd, piece.x_final_pos, piece.y_final_pos);
 
 }
 
@@ -684,6 +862,7 @@ int         main(int argc, char **argv)
     int fd;
     t_coor          map;
     t_coor_piece    piece;
+    int i = 0;
 
     fd = open("res", O_RDWR);   
     etapes = 0;
@@ -692,6 +871,7 @@ int         main(int argc, char **argv)
         init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2);
         free(line);
     }
+    t_coor      head = map;
     while (get_next_line(0, &line))
     {
         etapes += parsing_map(&map, line);
@@ -704,20 +884,42 @@ int         main(int argc, char **argv)
             map_chaleur_vertical(&map);          
             check_position_right_down(&map);
             check_position_left_up(&map);
+            check_position_right_up(&map);
+            check_position_left_down(&map);
         }
         else if (etapes == 2)
         {
             pos_piece(&piece);
-            check_around_pos(&map, &piece);
-            final_pos_piece(&map, &piece);
-            check_pos_final(&map, &piece);
-            print_fd(fd, map, piece);
-            ft_fprintf("<got (O): [%d, %d]\n\n", fd, piece.x_final_pos, piece.y_final_pos);
+            init_last_best_pos(&map, &piece);
+            while (piece.x_final_pos == -1 && piece.y_final_pos == -1)
+            {
+                ft_fprintf("\ncheck_around_pos = %d\n", fd, check_around_pos(&map, &piece)); // genere la best_pos 
+                // en fonction de la map de chaleur sur les position me_list et si une "last_best_pos"
+                // n'est pas active
+                
+                final_pos_piece(&map, &piece); // cree final_pos et met tout a -1;
+                
+                next_pos_stars(&map, &piece); // genere les position final_pos en fonction des position 
+                // stars sur best_pos_me
+
+                check_around_best_pos(&map, &piece); // verifie tout les position possible de best_pos_me 
+                // avec final_pos // non fini
+                
+                
+                check_pos_final(&map, &piece); // check tout les position final et choisis la meilleur 
+                // position en fonction de la chaleur
+                print_fd(fd, map, piece);
+            }
             ft_printf("%d %d\n", piece.x_final_pos, piece.y_final_pos);
+            ft_fprintf("<got (%c): [%d, %d] | %d\n", fd, map.me, piece.x_final_pos, piece.y_final_pos, map.map_chaleur[piece.x_final_pos][piece.y_final_pos]);
+            ft_fprintf("------------------------------------------------------\n", fd);
+            i++;
             etapes = 0;
             erase_list(&map, &piece);
+            piece.x_final_pos = -1;
+            piece.y_final_pos = -1;
         }
     }
-    close(fd);
+    // close(fd);
     return (0);
 }
