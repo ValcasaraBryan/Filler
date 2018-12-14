@@ -253,7 +253,7 @@ int         check_position_right_down(t_coor *map)
             }
         }
     }
-    return (0);
+    return (1);
 }
 
 int         check_position_left_up(t_coor *map)
@@ -279,7 +279,7 @@ int         check_position_left_up(t_coor *map)
             }
         }
     }
-    return (0);
+    return (1);
 }
 
 
@@ -306,7 +306,7 @@ int         check_position_right_up(t_coor *map)
             }
         }
     }
-    return (0);
+    return (1);
 }
 
 int         check_position_left_down(t_coor *map)
@@ -332,7 +332,7 @@ int         check_position_left_down(t_coor *map)
             }
         }
     }
-    return (0);
+    return (1);
 }
 
 
@@ -921,8 +921,9 @@ int         main(int argc, char **argv)
     etapes = 0;
     if (get_next_line(0, &line))
     {
-        init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2);
-        // free(line);
+       if (!(init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2)))
+            ft_fprintf("error_init_list\n", 2);
+        free(line);
         line = NULL;
     }
     while (get_next_line(0, &line))
@@ -937,10 +938,14 @@ int         main(int argc, char **argv)
                 ft_fprintf("error_horizontal\n", 2);
             if (!(map_chaleur_vertical(&map)))
                 ft_fprintf("error_vertical\n", 2);
-            check_position_right_down(&map);
-            check_position_left_up(&map);
-            check_position_right_up(&map);
-            check_position_left_down(&map);
+            if (!(check_position_right_down(&map)))
+                ft_fprintf("error_right_down\n", 2);
+            if (!(check_position_left_up(&map)))
+                ft_fprintf("error_left_up\n", 2);
+            if (!(check_position_right_up(&map)))
+                ft_fprintf("error_right_up\n", 2);
+            if (!(check_position_left_down(&map)))
+                ft_fprintf("error_left_down\n", 2);
         }
         else if (etapes == 2)
         {
@@ -948,19 +953,14 @@ int         main(int argc, char **argv)
             init_last_best_pos(&map, &piece);
             while (piece.x_final_pos == -1 && piece.y_final_pos == -1)
             {
-                check_around_pos(&map, &piece); // genere la best_pos 
-                // en fonction de la map de chaleur sur les position me_list et si une "last_best_pos"
-                // n'est pas active
-                
-                final_pos_piece(&map, &piece); // cree final_pos et met tout a -1;
-                
-                next_pos_stars(&map, &piece); // genere les position final_pos en fonction des position 
-                // stars sur best_pos_me
-                check_around_best_pos(&map, &piece); // verifie tout les position possible de best_pos_me 
-                // avec final_pos // non fini
+                ft_fprintf("\n%d ", fd, check_around_pos(&map, &piece));
+                ft_fprintf("%d ", fd, final_pos_piece(&map, &piece));                
+                ft_fprintf("%d ", fd, next_pos_stars(&map, &piece));
+                ft_fprintf("%d ", fd, check_around_best_pos(&map, &piece));
+                ft_fprintf("%d ", fd, nb_tab(&map, &piece, piece.final_pos));
                 if (!nb_tab(&map, &piece, piece.final_pos))
                     piece.last_best_pos[piece.x_best_pos][piece.y_best_pos] = piece.y_best_pos;
-                ft_fprintf("%d\n", fd, check_pos_final(&map, &piece)); // check tout les position final et choisis la meilleur 
+                ft_fprintf("%d\n", fd, check_pos_final(&map, &piece));
                 if (nb_tab(&map, &piece, map.me_list) == nb_tab(&map, &piece, piece.final_pos))
                     break;
                 print_fd(fd, map, piece);
