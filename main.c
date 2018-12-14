@@ -350,9 +350,7 @@ int         chaleur_down(t_coor *map, int y)
         {
             x = i;
             while (++i < map->x_map)
-                if (map->map_chaleur[i][y] == 2)
-                    map->map_chaleur[i][y] = 2;
-                else if (map->map_chaleur[i][y] == 0)
+                if (map->map_chaleur[i][y] == 0)
                 {
                     map->map_chaleur[i][y] = i - x + 1;
                     break;
@@ -950,30 +948,38 @@ int         main(int argc, char **argv)
             init_last_best_pos(&map, &piece);
             while (piece.x_final_pos == -1 && piece.y_final_pos == -1)
             {
-                ft_fprintf("\ncheck_around_pos = %d\n", fd, check_around_pos(&map, &piece)); // genere la best_pos 
+                check_around_pos(&map, &piece); // genere la best_pos 
                 // en fonction de la map de chaleur sur les position me_list et si une "last_best_pos"
                 // n'est pas active
                 
-                ft_fprintf("final_pos_piece = %d\n", fd, final_pos_piece(&map, &piece)); // cree final_pos et met tout a -1;
+                final_pos_piece(&map, &piece); // cree final_pos et met tout a -1;
                 
-                ft_fprintf("next_pos_stars = %d\n", fd,  next_pos_stars(&map, &piece)); // genere les position final_pos en fonction des position 
+                next_pos_stars(&map, &piece); // genere les position final_pos en fonction des position 
                 // stars sur best_pos_me
-                ft_fprintf("check_around_best_pos = %d\n", fd, check_around_best_pos(&map, &piece)); // verifie tout les position possible de best_pos_me 
+                check_around_best_pos(&map, &piece); // verifie tout les position possible de best_pos_me 
                 // avec final_pos // non fini
                 if (!nb_tab(&map, &piece, piece.final_pos))
                     piece.last_best_pos[piece.x_best_pos][piece.y_best_pos] = piece.y_best_pos;
-                ft_fprintf("check_pos_final = %d\n", fd,  check_pos_final(&map, &piece)); // check tout les position final et choisis la meilleur 
-                if (nb_tab(&map, &piece, map.me_list) == nb_tab(&map, &piece, piece.last_best_pos))
+                ft_fprintf("%d\n", fd, check_pos_final(&map, &piece)); // check tout les position final et choisis la meilleur 
+                if (nb_tab(&map, &piece, map.me_list) == nb_tab(&map, &piece, piece.final_pos))
                     break;
                 print_fd(fd, map, piece);
+                free_tab_int(piece.final_pos);
             }
             if (piece.x_final_pos >= 0 && piece.y_final_pos >= 0)
             {
                 ft_printf("%d %d\n", piece.x_final_pos, piece.y_final_pos);
                 ft_fprintf("%d %d\n", fd, piece.x_final_pos, piece.y_final_pos);
             }
+            else 
+                ft_printf("%d %d\n", 0, 0);
             etapes = 0;
             erase_list(&map, &piece);
+            free_tab_int(map.me_list);
+            free_tab_int(map.ennemi_list);
+            free_tab_int(map.map_chaleur);
+            free_tab_int(piece.last_best_pos);
+            free_tab_int(piece.pos_stars);
             piece.x_final_pos = -1;
             piece.y_final_pos = -1;
         }
