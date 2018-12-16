@@ -12,11 +12,15 @@
 
 #include "Filler.h"
 
-int         free_tab_int(int **tab)
+int         free_tab_int(int **tab, int size)
 {
-    int     i;
+    int     x;
 
-    i = -1;
+    x = -1;
+    while (++x < size)
+    {
+        free(tab[x]);
+    }
     free(tab);
     return (1);
 }
@@ -920,12 +924,12 @@ int         main(int argc, char **argv)
                 ft_printf("%d %d\n", 0, 0);
             etapes = 0;
             erase_list(&map, &piece);
-            free_tab_int(map.me_list);
-            free_tab_int(map.ennemi_list);
-            free_tab_int(map.map_chaleur);
-            free_tab_int(piece.last_best_pos);
-            free_tab_int(piece.pos_stars);
-            free_tab_int(piece.final_pos);
+            free_tab_int(map.me_list, map.x_map);
+            free_tab_int(map.ennemi_list, map.x_map);
+            free_tab_int(map.map_chaleur, map.x_map);
+            free_tab_int(piece.last_best_pos, piece.x_piece);
+            free_tab_int(piece.pos_stars, piece.x_piece);
+            free_tab_int(piece.final_pos, piece.x_piece);
             piece.x_final_pos = -1;
             piece.y_final_pos = -1;
         }
