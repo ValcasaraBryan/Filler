@@ -226,7 +226,7 @@ int         after_mappage(t_coor *map)
 
     if (!map->map_chaleur)
         return (0);
-    val = map->x_map * map->y_map - 1;
+    val = map->x_map + map->y_map + 1;
     x = -1;
     while (++x < map->x_map)
     {
@@ -899,15 +899,17 @@ int         main(int argc, char **argv)
             {
                 if (!(check_around_pos(&map, &piece)))
                     break;
-                ft_fprintf("next_pos_stars %d\n", fd, next_pos_stars(&map, &piece));
-                ft_fprintf("check_around_best_pos %d\n", fd, check_around_best_pos(&map, &piece));
-                ft_fprintf("nb_tab %d\n", fd, nb_tab(&map, &piece, piece.final_pos));
+                next_pos_stars(&map, &piece);
+                check_around_best_pos(&map, &piece);
+                nb_tab(&map, &piece, piece.final_pos);
                 if (!nb_tab(&map, &piece, piece.final_pos))
                     piece.last_best_pos[piece.x_best_pos][piece.y_best_pos] = piece.y_best_pos;
-                ft_fprintf("check_pos_final %d\n", fd, check_pos_final(&map, &piece));
+                check_pos_final(&map, &piece);
                 if (nb_tab(&map, &piece, map.me_list) == nb_tab(&map, &piece, piece.final_pos))
                     break;
-                // print_fd(fd, map, piece);
+                if (nb_tab(&map, &piece, map.me_list) > ((map.x_map / 2) * map.y_map) + (map.x_map % 2))
+                    ft_printf("%d %d\n", 0, 0);
+                print_fd(fd, map, piece);
             }
             if (piece.x_final_pos >= 0 && piece.y_final_pos >= 0)
             {
@@ -927,9 +929,7 @@ int         main(int argc, char **argv)
             piece.x_final_pos = -1;
             piece.y_final_pos = -1;
         }
-        if (etapes < 0)
-            exit(1);
     }
-    // close(fd);
+    close(fd);
     return (0);
 }

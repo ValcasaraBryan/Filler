@@ -37,13 +37,7 @@ comp :
 
 exe : comp
 	@echo "" > res
-	#@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/abanlin.filler
-	#@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/carli.filler 
-	#@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/champely.filler
-	#@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/grati.filler
-	#@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/hcao.filler
-	#@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/superjeannot.filler
-	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/virtual.filler
+	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/abanlin.filler
 
 std_2 : comp
 	@echo "" > res
