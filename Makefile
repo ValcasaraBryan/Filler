@@ -12,7 +12,7 @@
 
 NAME = resources/players/virtual.filler
 
-SRC = main.c
+SRC = main.c genere_list.c map_chaleur.c mappage.c before_mappage.c
 
 LIB = libft/libft.a
 
@@ -22,6 +22,8 @@ ARG = 0
 ARG_2 = 0
 
 HEAD = -I Filler.h
+
+CC = gcc
 
 OBJET = $(SRC:.c=.o)
 
@@ -33,11 +35,11 @@ $(NAME) :
 	make -C libft/
 
 comp :
-	@gcc $(SRC) $(LIB) -o $(NAME)
+	@gcc $(FLAG) $(SRC) $(LIB) -o $(NAME)
 
 exe : comp
 	@echo "" > res
-	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/abanlin.filler
+	@./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full ./resources/players/virtual.filler" -p2 resources/players/abanlin.filler > coucou
 
 std_2 : comp
 	@echo "" > res

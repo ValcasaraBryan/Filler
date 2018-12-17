@@ -17,10 +17,10 @@ int         free_tab_int(int **tab, int size)
     int     x;
 
     x = -1;
+    if (!tab)
+        return (0);
     while (++x < size)
-    {
         free(tab[x]);
-    }
     free(tab);
     return (1);
 }
@@ -41,21 +41,25 @@ int         free_tab_str(char **str)
         }
         free(str);
     }
-    return (1);
+    return (i);
 }
 
 int         erase_list(t_coor *map, t_coor_piece *piece)
 {
     int     ret;
+    t_map   *head_map;
+    t_piece   *head_piece;
 
     ret = 0;
     if (map->map)
     {
         while (map->map)
         {
+            head_map = map->map;
             free(map->map->map);
             map->map->map = NULL;
-            map->map = map->map->next;
+            free(map->map);
+            map->map = head_map->next;
         }
         ret++;
     }
@@ -63,77 +67,23 @@ int         erase_list(t_coor *map, t_coor_piece *piece)
     {
         while (piece->piece)
         {
+            head_piece = piece->piece->next;
             free(piece->piece->piece);
             piece->piece->piece = NULL;
-            piece->piece = piece->piece->next;
+            free(piece->piece);
+            piece->piece = head_piece;
         }
         ret++;
     }
     return (ret);
 }
 
-t_map       *new_map(char *line)
-{
-    t_map *list;
-
-    if (!(list = malloc(sizeof(t_map))))
-        return (NULL);
-    list->map = (!list) ? NULL : line;
-    list->next = NULL;
-    return (list);
-}
-
-t_map        *add_map(t_map *old, t_map *new)
-{
-    t_map    *head;
-
-    if (!old)
-        return (new);
-    else if (!new)
-        return (old);
-    else
-    {
-        head = old;
-        while (old->next)
-            old = old->next;
-        old->next = new;
-        return (head);
-    }
-}
-
-t_piece        *add_piece(t_piece *old, t_piece *new)
-{
-    t_piece    *head;
-
-    if (!old)
-        return (new);
-    else if (!new)
-        return (old);
-    else
-    {
-        head = old;
-        while (old->next)
-            old = old->next;
-        old->next = new;
-        return (head);
-    }
-}
-
-t_piece     *new_piece(char *line)
-{
-    t_piece *list;
-
-    if (!(list = malloc(sizeof(t_piece))))
-        return (NULL);
-    list->piece = (!list) ? NULL : line;
-    list->next = NULL;
-    return (list);
-}
 
 int         parsing_map(t_coor *map, char *line)
 {
     int i;
     char **tab;
+    int     ret;
 
     tab = NULL;
     if (ft_strstr(line, "Plateau"))
@@ -149,17 +99,29 @@ int         parsing_map(t_coor *map, char *line)
             return (-1);
         if (!(map->ennemi_list = (int **)malloc(sizeof(int *) * map->x_map)))
             return (-1);
-        get_next_line(0, &line);
-        free(line);
-            line = NULL;
-        while (i < map->x_map && get_next_line(0, &line))
+        if ((get_next_line(0, &line) > 0))
         {
-            tab = ft_strsplit(line, ' ');
             free(line);
-            free(tab[0]);
-            tab[0] = NULL;
             line = NULL;
-            map->map = add_map(map->map, new_map(tab[1]));
+        }
+        while (i < map->x_map && (ret = get_next_line(0, &line)) > 0)
+        {
+            if (line && ft_strnchr(line, '.', ft_strlen(line)) == -1)
+                if (line && ft_strnchr(line, 'O', ft_strlen(line)) == -1)
+                    if (line && ft_strnchr(line, 'X', ft_strlen(line)) == -1)
+                        exit(0);
+            if (line)
+                tab = ft_strsplit(line, ' ');
+            if (line)
+            {
+                free(line);
+                line = NULL;
+            }
+            if (tab[1])
+            {
+                map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
+                free_tab_str(tab);
+            }
             i++;
         }
         return (1);
@@ -212,264 +174,14 @@ int         tab_int(t_coor *map, char char_of_player)
             return (-1);
         i = -1;
         while (head->map[++i])
-        {
             tab[j][i] = (head->map[i] == char_of_player) ? i : -1;
-            tab[j][i] = (head->map[i] == char_of_player + 32) ? -4 : tab[j][i];
-        }
         j++;
         head = head->next;
     }
     return (1);
 }
 
-int         after_mappage(t_coor *map)
-{
-    int     x;
-    int     y;
-    int     val;
-
-    if (!map->map_chaleur)
-        return (0);
-    val = map->x_map + map->y_map + 1;
-    x = -1;
-    while (++x < map->x_map)
-    {
-        y = -1;
-        while (++y < map->y_map)
-            if (map->map_chaleur[x][y] == 0)
-                map->map_chaleur[x][y] = val;
-    }
-    return (1);
-}
-
-int         val_around(t_coor *map, int val, int x, int y)
-{
-    int     tmp;
-
-    
-    val = (y - 1 >= 0 && (tmp = map->map_chaleur[x][y - 1]) > 0 && tmp <= val) ? tmp : val;
-    val = (y + 1 < map->y_map && (tmp = map->map_chaleur[x][y + 1]) > 0 && tmp <= val) ? tmp : val;
-    val = (x - 1 >= 0 && (tmp = map->map_chaleur[x - 1][y]) > 0 && tmp <= val) ? tmp : val;
-    val = (x + 1 < map->x_map && (tmp = map->map_chaleur[x + 1][y]) > 0 && tmp <= val) ? tmp : val;
-    return (val);
-}
-
-int         check_position_right_down(t_coor *map)
-{
-    int     x;
-    int     y;
-    int     val;
-
-    if (!map->map_chaleur)
-        return (0);
-    x = -1;
-    while (++x < map->x_map)
-    {
-        y = -1;
-        while (++y < map->y_map)
-        {
-            val = map->y_map * map->x_map;
-            if (map->map_chaleur[x][y] == 0 || map->map_chaleur[x][y] > 2)
-            {
-                val = val_around(map, val, x, y);
-                if (val > 0 && val < map->y_map * map->x_map)
-                    map->map_chaleur[x][y] = val + 1;
-            }
-        }
-    }
-    return (1);
-}
-
-int         check_position_left_up(t_coor *map)
-{
-    int     x;
-    int     y;
-    int     val;
-
-    if (!map->map_chaleur)
-        return (0);
-    x = map->x_map;
-    while (--x >= 0)
-    {
-        y = map->y_map;
-        while (--y >= 0)
-        {
-            val = map->y_map * map->x_map;
-            if (map->map_chaleur[x][y] == 0 || map->map_chaleur[x][y] > 2)
-            {
-                val = val_around(map, val, x, y);
-                if (val > 0 && val < map->y_map * map->x_map)
-                    map->map_chaleur[x][y] = val + 1;
-            }
-        }
-    }
-    return (1);
-}
-
-
-int         check_position_right_up(t_coor *map)
-{
-    int     x;
-    int     y;
-    int     val;
-
-    if (!map->map_chaleur)
-        return (0);
-    x = map->x_map;
-    while (--x >= 0)
-    {
-        y = -1;
-        while (++y < map->y_map)
-        {
-            val = map->y_map * map->x_map;
-            if (map->map_chaleur[x][y] == 0 || map->map_chaleur[x][y] > 2)
-            {
-                val = val_around(map, val, x, y);
-                if (val > 0 && val < map->y_map * map->x_map)
-                    map->map_chaleur[x][y] = val + 1;
-            }
-        }
-    }
-    return (1);
-}
-
-int         check_position_left_down(t_coor *map)
-{
-    int     x;
-    int     y;
-    int     val;
-
-    if (!map->map_chaleur)
-        return (0);
-    x = -1;
-    while (++x < map->x_map)
-    {
-        y = map->y_map;
-        while (--y >= 0)
-        {
-            val = map->y_map * map->x_map;
-            if (map->map_chaleur[x][y] == 0 || map->map_chaleur[x][y] > 2)
-            {
-                val = val_around(map, val, x, y);
-                if (val > 0 && val < map->y_map * map->x_map)
-                    map->map_chaleur[x][y] = val + 1;
-            }
-        }
-    }
-    return (1);
-}
-
-
-int         chaleur_down(t_coor *map, int y)
-{
-    int     i;
-
-    if (!map->map)
-        return (0);
-    i = map->x_map;
-    while (--i >= 0)
-        if (map->ennemi_list[i][y] == y)
-            if (i + 1 < map->x_map && map->map_chaleur[i + 1][y] >= 0)
-                    map->map_chaleur[i + 1][y] = 2;
-    return (1);
-}
-
-int         chaleur_up(t_coor *map, int y)
-{
-    int     i;
-
-    if (!map->map)
-        return (0);
-    i = -1;
-    while (++i < map->x_map)
-        if (map->ennemi_list[i][y] == y)
-            if (i - 1 >= 0 && map->map_chaleur[i - 1][y] >= 0)
-                map->map_chaleur[i - 1][y] = 2;
-    return (1);
-}
-
-int         chaleur_right(t_coor *map, int x)
-{
-    int     i;
-
-    if (!map->map)
-        return (0);
-    i = map->y_map;
-    while (i--)
-        if (map->ennemi_list[x][i] == i)
-            if (i + 1 < map->y_map && map->map_chaleur[x][i + 1] >= 0)
-                map->map_chaleur[x][i + 1] = 2;
-    return (1);
-}
-
-int         chaleur_left(t_coor *map, int x)
-{
-    int     i;
-
-    if (!map->map)
-        return (0);
-    i = -1;
-    while (++i < map->y_map)
-        if (map->ennemi_list[x][i] == i)
-            if (i - 1 >= 0 && map->map_chaleur[x][i - 1] >= 0)
-                map->map_chaleur[x][i - 1] = 2;
-    return (1);
-}
-
-int         val_player_fct(t_coor *map, int x, int y)
-{
-    if (!map->map)
-        return (-1);
-    if (map->me_list[x][y] == y)
-        return (-3);
-    else if (map->ennemi_list[x][y] == y)
-        return (-2);
-    else if (map->ennemi_list[x][y] == -4)
-        return (-4);
-    else
-        return (0);
-}
-
-int         map_chaleur_horizontal(t_coor *map)
-{
-    int     x;
-    int     y;
-    int     val_player;
-
-    if (!map->map || !map->x_map)
-        return (0);
-    x = -1;
-    while (++x < map->x_map)
-    {
-        y = -1;
-        if (!(map->map_chaleur[x] = (int *)malloc(sizeof(int) * map->y_map)))
-            return (-1);
-        ft_bzero(map->map_chaleur[x], map->y_map);
-        chaleur_left(map, x);
-        chaleur_right(map, x);
-        while (++y < map->y_map)
-            if (map->me_list[x][y] == y || map->ennemi_list[x][y] == y || map->ennemi_list[x][y] == -4)
-                map->map_chaleur[x][y] = val_player_fct(map, x, y);
-    }
-    return (1);
-}
-
-int         map_chaleur_vertical(t_coor *map)
-{
-    int     y;
-
-    if (!map->map_chaleur || !map->y_map || !map->x_map)
-        return (0);
-    y = -1;
-    while (++y < map->y_map)
-    {
-        chaleur_up(map, y);
-        chaleur_down(map, y);
-    }
-    return (1);
-}
-
-int         nb_tab(t_coor *map, t_coor_piece *piece, int **tab)
+int         nb_tab(t_coor *map, int **tab)
 {
     int     x;
     int     y;
@@ -723,7 +435,7 @@ int         pos_piece(t_coor_piece *piece)
 
 int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
 {
-    if (map && piece)
+    if (map && piece && (player == 2 || player == 1))
     {
         map->map = NULL;
         piece->piece = NULL;
@@ -853,7 +565,34 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
     
 }
 
-int         main(int argc, char **argv)
+int         read_player(t_coor *map, t_coor_piece *piece, char *line)
+{
+    int     i;
+    if ((i = get_next_line(0, &line)) > 0)
+    {
+        if (!(init_list_filler(map, piece, (ft_strstr(line, "p1")) ? 1 : 2)))
+        {
+            ft_fprintf("Bad player info\n", 2);
+            exit(1);
+        }
+        if (line)
+        {
+            free(line);
+            line = NULL;
+        }
+    }
+    return (i);
+}
+
+void        ft_print(int x, int y)
+{
+    ft_putnbr(x);
+    ft_putchar(' ');
+    ft_putnbr(y);
+    ft_putchar('\n');
+}
+
+int         main(void)
 {
     char    *line;
     int     etapes;
@@ -863,19 +602,14 @@ int         main(int argc, char **argv)
 
     fd = open("res", O_RDWR);   
     etapes = 0;
-    if (get_next_line(0, &line))
-    {
-        if (!(init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2)))
-        {
-            ft_fprintf("error_init_list\n", 2);
-            free(line);
-            line = NULL;
-        }
-    }
-    while (get_next_line(0, &line))
+    line = NULL;
+    read_player(&map, &piece, line);
+    while ((get_next_line(0, &line) > 0))
     {
         etapes += parsing_map(&map, line);
         etapes += parsing_piece(&piece, line);
+        free(line);
+        line = NULL;
         if (etapes == 1)
         {
             tab_int(&map, map.me);
@@ -905,35 +639,33 @@ int         main(int argc, char **argv)
                     break;
                 next_pos_stars(&map, &piece);
                 check_around_best_pos(&map, &piece);
-                nb_tab(&map, &piece, piece.final_pos);
-                if (!nb_tab(&map, &piece, piece.final_pos))
+                nb_tab(&map, piece.final_pos);
+                if (!nb_tab(&map, piece.final_pos))
                     piece.last_best_pos[piece.x_best_pos][piece.y_best_pos] = piece.y_best_pos;
                 check_pos_final(&map, &piece);
-                if (nb_tab(&map, &piece, map.me_list) == nb_tab(&map, &piece, piece.final_pos))
+                if (nb_tab(&map, map.me_list) == nb_tab(&map, piece.final_pos))
                     break;
-                if (nb_tab(&map, &piece, map.me_list) > ((map.x_map / 2) * map.y_map) + (map.x_map % 2))
-                    ft_printf("%d %d\n", 0, 0);
-                print_fd(fd, map, piece);
+                if (nb_tab(&map, map.me_list) > ((map.x_map / 2) * map.y_map) + (map.x_map % 2))
+                    ft_print(0, 0);
             }
             if (piece.x_final_pos >= 0 && piece.y_final_pos >= 0)
-            {
-                ft_printf("%d %d\n", piece.x_final_pos, piece.y_final_pos);
-                ft_fprintf("%d %d\n", fd, piece.x_final_pos, piece.y_final_pos);
-            }
+                ft_print(piece.x_final_pos, piece.y_final_pos);
             else 
-                ft_printf("%d %d\n", 0, 0);
+                ft_print(0, 0);
             etapes = 0;
-            erase_list(&map, &piece);
+            free_tab_int(map.map_chaleur, map.x_map);
+            free_tab_int(piece.pos_stars, piece.x_piece);
             free_tab_int(map.me_list, map.x_map);
             free_tab_int(map.ennemi_list, map.x_map);
-            free_tab_int(map.map_chaleur, map.x_map);
-            free_tab_int(piece.last_best_pos, piece.x_piece);
-            free_tab_int(piece.pos_stars, piece.x_piece);
-            free_tab_int(piece.final_pos, piece.x_piece);
+            free_tab_int(piece.last_best_pos, map.x_map);
+            free_tab_int(piece.final_pos, map.x_map);
             piece.x_final_pos = -1;
             piece.y_final_pos = -1;
         }
+        erase_list(&map, &piece);
+        free(line);
     }
+    free(line);
     close(fd);
     return (0);
 }

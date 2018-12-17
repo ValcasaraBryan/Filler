@@ -17,9 +17,6 @@
 # include "libft/includes/get_next_line.h"
 # include "libft/includes/ft_printf.h"
 # include <stdio.h>
-# define ME             0;
-# define ENNEMI         -1;
-# define POS_NULL       -2;
 
 typedef struct          s_map
 {
@@ -58,6 +55,27 @@ typedef struct          s_tailles_piece
     int                 **final_pos;
     struct s_piece      *piece;
 }                       t_coor_piece;
+
+int         val_around(t_coor *map, int val, int x, int y);
+int         check_position_right_down(t_coor *map);
+int         check_position_left_up(t_coor *map);
+int         check_position_right_up(t_coor *map);
+int         check_position_left_down(t_coor *map);
+
+int         chaleur_down(t_coor *map, int y);
+int         chaleur_up(t_coor *map, int y);
+int         chaleur_right(t_coor *map, int x);
+int         chaleur_left(t_coor *map, int x);
+int         after_mappage(t_coor *map);
+
+int         val_player_fct(t_coor *map, int x, int y);
+int         map_chaleur_vertical(t_coor *map);
+int         map_chaleur_horizontal(t_coor *map);
+
+t_map       *new_map(char *line);
+t_map       *add_map(t_map *old, t_map *new);
+t_piece     *add_piece(t_piece *old, t_piece *new);
+t_piece     *new_piece(char *line);
 
 
 #endif
