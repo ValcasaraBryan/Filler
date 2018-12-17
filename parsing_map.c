@@ -22,6 +22,8 @@ int         parsing_map(t_coor *map, char *line)
     {
         i = 0;
         tab = ft_strsplit(line, ' ');
+        free(line);
+        line = NULL;
         map->x_map = ft_atoi(tab[1]);
         map->y_map = ft_atoi(tab[2]);
         free_tab_str(tab);
@@ -31,17 +33,13 @@ int         parsing_map(t_coor *map, char *line)
             return (-1);
         if (!(map->ennemi_list = (int **)malloc(sizeof(int *) * map->x_map)))
             return (-1);
-        get_next_line(0, &line);
-        free(line);
-            line = NULL;
         while (i < map->x_map && get_next_line(0, &line))
         {
             tab = ft_strsplit(line, ' ');
             free(line);
-            free(tab[0]);
-            tab[0] = NULL;
             line = NULL;
-            map->map = add_map(map->map, new_map(tab[1]));
+            map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
+            free_tab_str(tab);
             i++;
         }
         return (1);

@@ -22,6 +22,8 @@ int         parsing_piece(t_coor_piece *piece, char *line)
     {
         i = 0;
         tab = ft_strsplit(line, ' ');
+        free(line);
+        line = NULL;
         piece->x_piece = ft_atoi(tab[1]);
         piece->y_piece = ft_atoi(tab[2]);
         free_tab_str(tab);

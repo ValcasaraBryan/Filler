@@ -26,7 +26,7 @@ SRC =	main.c\
 		parsing_map.c\
 		parsing_piece.c\
 		print_list.c
-		
+
 LIB = libft/libft.a
 
 EXE = 0
@@ -52,7 +52,7 @@ comp :
 
 exe : comp
 	@echo "" > res
-	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -t -p2 resources/players/abanlin.filler
+	@./resources/filler_vm -f resources/maps/map01 -p1 "valgrind  --leak-check=full ./resources/players/virtual.filler" -t -p2 resources/players/abanlin.filler > coucou
 
 std_2 : comp
 	@echo "" > res

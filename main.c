@@ -25,11 +25,9 @@ int         main(void)
     if (get_next_line(0, &line))
     {
         if (!(init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2)))
-        {
             ft_fprintf("error_init_list\n", 2);
-            free(line);
-            line = NULL;
-        }
+        free(line);
+        line = NULL;
     }
     while (get_next_line(0, &line))
     {
@@ -40,17 +38,17 @@ int         main(void)
             tab_int(&map, map.me);
             tab_int(&map, map.ennemi);
             if (!(map_chaleur_horizontal(&map)))
-                ft_fprintf("error_horizontal\n", 2);
+                ft_printf("error_horizontal\n");
             if (!(map_chaleur_vertical(&map)))
-                ft_fprintf("error_vertical\n", 2);
+                ft_printf("error_vertical\n");
             if (!(check_position_right_down(&map)))
-                ft_fprintf("error_right_down\n", 2);
+                ft_printf("error_right_down\n");
             if (!(check_position_left_up(&map)))
-                ft_fprintf("error_left_up\n", 2);
+                ft_printf("error_left_up\n");
             if (!(check_position_right_up(&map)))
-                ft_fprintf("error_right_up\n", 2);
+                ft_printf("error_right_up\n");
             if (!(check_position_left_down(&map)))
-                ft_fprintf("error_left_down\n", 2);
+                ft_printf("error_left_down\n");
             after_mappage(&map);
         }
         else if (etapes == 2)
@@ -72,7 +70,7 @@ int         main(void)
                     break;
                 if (nb_tab(&map, map.me_list) > ((map.x_map / 2) * map.y_map) + (map.x_map % 2))
                     ft_print(0, 0);
-                print_fd(fd, map, piece);
+                // print_fd(fd, map, piece);
             }
             if (piece.x_final_pos >= 0 && piece.y_final_pos >= 0)
                 ft_print(piece.x_final_pos, piece.y_final_pos);
@@ -83,13 +81,15 @@ int         main(void)
             free_tab_int(map.me_list, map.x_map);
             free_tab_int(map.ennemi_list, map.x_map);
             free_tab_int(piece.pos_stars, piece.x_piece);
+            free_tab_int(map.map_chaleur, map.x_map);
+            free_tab_int(piece.last_best_pos, map.x_map);
+            free_tab_int(piece.final_pos, map.x_map);
             piece.y_final_pos = -1;
             piece.x_final_pos = -1;
-            // free_tab_int(map.map_chaleur, map.x_map);
-            // free_tab_int(piece.last_best_pos, map.x_map);
-            // free_tab_int(piece.final_pos, map.x_map);
         }
+        free(line);
     }
+    free(line);
     close(fd);
     return (0);
 }
