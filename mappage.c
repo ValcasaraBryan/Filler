@@ -17,11 +17,14 @@ int         val_around(t_coor *map, int val, int x, int y)
 {
     int     tmp;
 
-    
-    val = (y - 1 >= 0 && (tmp = map->map_chaleur[x][y - 1]) > 0 && tmp <= val) ? tmp : val;
-    val = (y + 1 < map->y_map && (tmp = map->map_chaleur[x][y + 1]) > 0 && tmp <= val) ? tmp : val;
-    val = (x - 1 >= 0 && (tmp = map->map_chaleur[x - 1][y]) > 0 && tmp <= val) ? tmp : val;
-    val = (x + 1 < map->x_map && (tmp = map->map_chaleur[x + 1][y]) > 0 && tmp <= val) ? tmp : val;
+    val = (y - 1 >= 0 && (tmp = map->map_chaleur[x][y - 1]) > 0
+        && tmp <= val) ? tmp : val;
+    val = (y + 1 < map->y_map && (tmp = map->map_chaleur[x][y + 1]) > 0
+        && tmp <= val) ? tmp : val;
+    val = (x - 1 >= 0 && (tmp = map->map_chaleur[x - 1][y]) > 0
+        && tmp <= val) ? tmp : val;
+    val = (x + 1 < map->x_map && (tmp = map->map_chaleur[x + 1][y]) > 0
+        && tmp <= val) ? tmp : val;
     return (val);
 }
 

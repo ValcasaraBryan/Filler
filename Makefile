@@ -12,7 +12,12 @@
 
 NAME = resources/players/virtual.filler
 
-SRC = main.c utils.c
+SRC =	main.c\
+		mappage.c\
+		before_mappage.c\
+		map_chaleur.c\
+		genere_list.c\
+		utils.c
 
 LIB = libft/libft.a
 

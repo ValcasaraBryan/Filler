@@ -55,31 +55,43 @@ typedef struct          s_tailles_piece
     int                 **final_pos;
     struct s_piece      *piece;
 }                       t_coor_piece;
-
+/*
+**          mappage.c
+*/
 int         val_around(t_coor *map, int val, int x, int y);
 int         check_position_right_down(t_coor *map);
 int         check_position_left_up(t_coor *map);
 int         check_position_right_up(t_coor *map);
 int         check_position_left_down(t_coor *map);
-
+/*
+**          before_mappage.c
+*/
 int         chaleur_down(t_coor *map, int y);
 int         chaleur_up(t_coor *map, int y);
 int         chaleur_right(t_coor *map, int x);
 int         chaleur_left(t_coor *map, int x);
 int         after_mappage(t_coor *map);
-
+/*
+**          map_chaleur.c
+*/
 int         val_player_fct(t_coor *map, int x, int y);
 int         map_chaleur_vertical(t_coor *map);
 int         map_chaleur_horizontal(t_coor *map);
-
+/*
+**          genere_list.c
+*/
 t_map       *new_map(char *line);
 t_map       *add_map(t_map *old, t_map *new);
 t_piece     *add_piece(t_piece *old, t_piece *new);
 t_piece     *new_piece(char *line);
-
+/*
+**          utils.c
+*/
 int         nb_tab(t_coor *map, int **tab);
 void        ft_print(int x, int y);
-
+/*
+**          
+*/
 
 
 #endif
