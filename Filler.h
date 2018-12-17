@@ -77,5 +77,9 @@ t_map       *add_map(t_map *old, t_map *new);
 t_piece     *add_piece(t_piece *old, t_piece *new);
 t_piece     *new_piece(char *line);
 
+int         nb_tab(t_coor *map, int **tab);
+void        ft_print(int x, int y);
+
+
 
 #endif
