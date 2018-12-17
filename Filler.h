@@ -90,8 +90,47 @@ t_piece     *new_piece(char *line);
 int         nb_tab(t_coor *map, int **tab);
 void        ft_print(int x, int y);
 /*
-**          
+**          allocation.c
 */
-
-
+int         tab_int(t_coor *map, char char_of_player);
+int         init_last_best_pos(t_coor *map, t_coor_piece *piece);
+int         final_pos_piece(t_coor *map, t_coor_piece *piece);
+int         pos_piece(t_coor_piece *piece);
+/*
+**          check_chaleur.c
+*/
+int         next_pos_stars(t_coor *map, t_coor_piece *piece);
+int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y);
+int         check_pos_final(t_coor *map, t_coor_piece *piece);
+/*
+**          check_pos_map.c
+*/
+int         best_position(t_coor *map, int x, int y, int val);
+int         check_around_pos(t_coor *map, t_coor_piece *piece);
+int         check_arount_best_pos_piece(t_coor *map, t_coor_piece *piece,
+            int x, int y);
+int         check_around_best_pos(t_coor *map, t_coor_piece *piece);
+/*
+**          init_val.c
+*/
+int         init_list_filler(t_coor *map, t_coor_piece *piece, int player);
+int         read_player(t_coor *map, t_coor_piece *piece, char *line);
+/*
+**          liberation.c
+*/
+int         free_tab_int(int **tab, int size);
+int         free_tab_str(char **str);
+int         erase_list(t_coor *map, t_coor_piece *piece);
+/*
+**          parsing_map.c
+*/
+int         parsing_map(t_coor *map, char *line);
+/*
+**          parsing_piece.c
+*/
+int         parsing_piece(t_coor_piece *piece, char *line);
+/*
+**          print_list.c
+*/
+void        print_fd(int fd, t_coor map, t_coor_piece piece);
 #endif

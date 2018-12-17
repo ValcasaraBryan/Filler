@@ -17,8 +17,16 @@ SRC =	main.c\
 		before_mappage.c\
 		map_chaleur.c\
 		genere_list.c\
-		utils.c
-
+		utils.c\
+		allocation.c\
+		check_chaleur.c\
+		check_pos_map.c\
+		init_val.c\
+		liberation.c\
+		parsing_map.c\
+		parsing_piece.c\
+		print_list.c
+		
 LIB = libft/libft.a
 
 EXE = 0
