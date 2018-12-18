@@ -17,7 +17,7 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
         int x;
         int y;
 
-        // x = 0;
+        x = 0;
         // ft_fprintf("map_chaleur     = x = %d, y = %d\n", fd, map.x_map, map.y_map);
         // ft_fprintf("\n", fd);
         // while (x < map.x_map)
@@ -31,31 +31,31 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
             // }
             // x++;
         // }
-        // x = 0;
-        // ft_fprintf("\n", fd);
-        // while (x < map.x_map)
-        // {
-            // y = 0;
-            // while (y < map.y_map)
-            // {
-                // if (map.ennemi_list[x][y] > -1)
-                    // ft_fprintf("ennemi_list     = x = %d, y = %d\n", fd, x, map.ennemi_list[x][y]);
-                // else if (map.ennemi_list[x][y] == -4)
-                    // ft_fprintf("ennemi_list     = x = %d, y = %d = %d\n", fd, x, y, map.ennemi_list[x][y]);
-                // y++;
-            // }
-            // x++;
-        // }
         x = 0;
         ft_fprintf("\n", fd);
-        while (x < map.x_map)
+        while (x < map.x_map - 1)
         {
             y = 0;
-            while (y < map.y_map)
+            while (y < map.y_map - 1)
+            {
+                if (map.ennemi_list[x][y] > -1)
+                    ft_fprintf("ennemi_list     = x = %d, y = %d\n", fd, x, map.ennemi_list[x][y]);
+                else if (map.ennemi_list[x][y] == -4)
+                    ft_fprintf("ennemi_list     = x = %d, y = %d = %d\n", fd, x, y, map.ennemi_list[x][y]);
+                y++;
+            }
+            x++;
+        }
+        x = 0;
+        ft_fprintf("\n", fd);
+        while (x < map.x_map - 1)
+        {
+            y = 0;
+            while (y < map.y_map - 1)
             {
                 ft_fprintf("%3d", fd, map.map_chaleur[x][y]);
                 y++;
-                if (y == map.y_map)
+                if (y == map.y_map - 1)
                     ft_fprintf("\n", fd);
             }
             x++;
@@ -93,10 +93,10 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
         ft_fprintf("\n", fd);
         ft_fprintf("best_pos_me    = x = %d, y = %d\n", fd, piece.x_best_pos, piece.y_best_pos);
         ft_fprintf("\n", fd);
-        while (++x < map.x_map)
+        while (++x < map.x_map - 1)
         {
             y = -1;
-            while (++y < map.y_map)
+            while (++y < map.y_map - 1)
             {
                 if (piece.final_pos[x][y] != -1)
                     ft_fprintf("final_pos[x][y]  = x = %d, y = %d | %d\n", fd, x, y, map.map_chaleur[x][y]);
@@ -104,10 +104,10 @@ void    print_fd(int fd, t_coor map, t_coor_piece piece)
         }
         ft_fprintf("\n", fd);
         x = 0;
-        while (x < map.x_map)
+        while (x < map.x_map - 1)
         {
             y = 0;
-            while (y < map.y_map)
+            while (y < map.y_map - 1)
             {
                 if (piece.last_best_pos[x][y] != -1)
                     ft_fprintf("last_best_pos = x = %d, y = %d\n", fd, x, y);

@@ -30,10 +30,7 @@ int         tab_int(t_coor *map, char char_of_player)
             return (-1);
         i = -1;
         while (head->map[++i])
-        {
             tab[j][i] = (head->map[i] == char_of_player) ? i : -1;
-            tab[j][i] = (head->map[i] == char_of_player + 32) ? -4 : tab[j][i];
-        }
         j++;
         head = head->next;
     }

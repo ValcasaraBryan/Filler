@@ -20,10 +20,10 @@ int         nb_tab(t_coor *map, int **tab)
 
     x = -1;
     i = 0;
-    while (++x < map->x_map)
+    while (++x < map->x_map - 1)
     {
         y = -1;
-        while (++y < map->y_map)
+        while (++y < map->y_map - 1)
         {
             if (tab[x][y] != -1)
                 i++;

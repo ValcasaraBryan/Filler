@@ -19,7 +19,7 @@ int         free_tab_int(int **tab, int size)
     x = -1;
     if (!tab)
         return (0);
-    while (++x < size)
+    while (++x < size - 1)
         free(tab[x]);
     free(tab);
     return (1);

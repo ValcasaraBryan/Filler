@@ -42,7 +42,8 @@ int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y)
     if (!(map->map_chaleur) || !(piece->pos_stars))
         return (-1);
     x_piece = -1;
-    val = map->x_map * map->y_map;
+    val = map->x_map + map->y_map + 1;
+    tmp = val;
     while (++x_piece < piece->x_piece)
     {
         y_piece = -1;
@@ -50,12 +51,12 @@ int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y)
         {
             if (piece->pos_stars[x_piece][y_piece] != -1)
             {
-                if (map->map_chaleur[x + x_piece][y + y_piece] < val)
-                   tmp = map->map_chaleur[x + x_piece][y + y_piece];
+                if (x + x_piece < map->x_map + 1 && y + y_piece < map->y_map + 1)
+                    if (x + x_piece >= 0 && y + y_piece >= 0)
+                        if (map->map_chaleur[x + x_piece][y + y_piece] < val)
+                            tmp = map->map_chaleur[x + x_piece][y + y_piece];
                 if (tmp > 0 && tmp < val)
                    val = tmp;
-                if (tmp == 0)
-                    val = 0;
             }
         }
     }
@@ -72,23 +73,23 @@ int         check_pos_final(t_coor *map, t_coor_piece *piece)
     if (!(map->map_chaleur) || !(piece->final_pos) || !(map->me_list))
         return (-1);
     x = -1;
-    val = map->x_map * map->y_map;
+    val = map->x_map + map->y_map + 1;
+    tmp = val;
     while (++x < map->x_map)
     {
         y = -1;
         while (++y < map->y_map)
-        {
             if (piece->final_pos[x][y] != -1)
             {
                 tmp = check_chaleur_piece(map, piece, x, y);
-                if (tmp < val)
+                if (tmp <= val)
                 {
                     val = tmp;
                     piece->x_final_pos = x;
                     piece->y_final_pos = y;
                 }
             }
-        }
+
     }
     return (1);
 }

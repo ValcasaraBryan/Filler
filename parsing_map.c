@@ -38,7 +38,8 @@ int         parsing_map(t_coor *map, char *line)
             tab = ft_strsplit(line, ' ');
             free(line);
             line = NULL;
-            map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
+            if (tab[1])
+                map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
             free_tab_str(tab);
             i++;
         }
