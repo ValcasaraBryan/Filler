@@ -22,8 +22,7 @@ int         main(void)
     etapes = 0;
     if (get_next_line(0, &line))
     {
-        if (!(init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2)))
-            ft_fprintf("error_init_list\n", 2);
+        init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2);
         free_line(&line);
     }
     while (get_next_line(0, &line))
@@ -34,18 +33,12 @@ int         main(void)
         {
             tab_int(&map, map.me);
             tab_int(&map, map.ennemi);
-            if (!(map_chaleur_horizontal(&map)))
-                ft_printf("error_horizontal\n");
-            if (!(map_chaleur_vertical(&map)))
-                ft_printf("error_vertical\n");
-            if (!(check_position_right_down(&map)))
-                ft_printf("error_right_down\n");
-            if (!(check_position_left_up(&map)))
-                ft_printf("error_left_up\n");
-            if (!(check_position_right_up(&map)))
-                ft_printf("error_right_up\n");
-            if (!(check_position_left_down(&map)))
-                ft_printf("error_left_down\n");
+            map_chaleur_horizontal(&map);
+            map_chaleur_vertical(&map);
+            check_position_right_down(&map);
+            check_position_left_up(&map);
+            check_position_right_up(&map);
+            check_position_left_down(&map);
             after_mappage(&map);
         }
         else if (etapes == 2)
