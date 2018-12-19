@@ -18,7 +18,18 @@ t_map       *new_map(char *line)
 
     if (!(list = malloc(sizeof(t_map))))
         return (NULL);
-    list->map = (!list) ? NULL : line;
+    list->map = (!list || !line) ? NULL : line;
+    list->next = NULL;
+    return (list);
+}
+
+t_piece     *new_piece(char *line)
+{
+    t_piece *list;
+
+    if (!(list = malloc(sizeof(t_piece))))
+        return (NULL);
+    list->piece = (!list || !line) ? NULL : line;
     list->next = NULL;
     return (list);
 }
@@ -57,15 +68,4 @@ t_piece        *add_piece(t_piece *old, t_piece *new)
         old->next = new;
         return (head);
     }
-}
-
-t_piece     *new_piece(char *line)
-{
-    t_piece *list;
-
-    if (!(list = malloc(sizeof(t_piece))))
-        return (NULL);
-    list->piece = (!list) ? NULL : line;
-    list->next = NULL;
-    return (list);
 }

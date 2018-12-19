@@ -12,18 +12,19 @@
 
 #include "Filler.h"
 
-int         parsing_map(t_coor *map, char *line)
+int         parsing_map(t_coor *map, char **line)
 {
     int i;
     char **tab;
 
     tab = NULL;
-    if (ft_strstr(line, "Plateau"))
+    if (!(*line))
+        return (0);
+    if (ft_strstr(*line, "Plateau"))
     {
-        i = 0;
-        tab = ft_strsplit(line, ' ');
-        free(line);
-        line = NULL;
+        i = -1;
+        tab = ft_strsplit(*line, ' ');
+        free_line(line);
         map->x_map = ft_atoi(tab[1]);
         map->y_map = ft_atoi(tab[2]);
         free_tab_str(tab);
@@ -33,15 +34,15 @@ int         parsing_map(t_coor *map, char *line)
             return (-1);
         if (!(map->ennemi_list = (int **)malloc(sizeof(int *) * map->x_map)))
             return (-1);
-        while (i < map->x_map && get_next_line(0, &line))
+        get_next_line(0, line);
+        free_line(line);
+        while (++i < map->x_map && get_next_line(0, line))
         {
-            tab = ft_strsplit(line, ' ');
-            free(line);
-            line = NULL;
+            tab = ft_strsplit(*line, ' ');
+            free_line(line);
             if (tab[1])
                 map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
             free_tab_str(tab);
-            i++;
         }
         return (1);
     }

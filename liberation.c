@@ -17,12 +17,24 @@ int         free_tab_int(int **tab, int size)
     int     x;
 
     x = -1;
-    if (!tab)
+    if (!tab || size < 0)
         return (0);
-    while (++x < size - 1)
+    while (++x < size)
         free(tab[x]);
     free(tab);
     return (1);
+}
+
+int         free_line(char **line)
+{
+    if (*line)
+    {
+        free(*line);
+        *line = NULL;
+        return (1);
+    }
+    else
+        return (0);
 }
 
 int         free_tab_str(char **str)
@@ -51,15 +63,17 @@ int         erase_list(t_coor *map, t_coor_piece *piece)
     t_piece   *head_piece;
 
     ret = 0;
+    head_map = NULL;
+    head_piece = NULL;
     if (map->map)
     {
         while (map->map)
         {
-            head_map = map->map;
+            head_map = map->map->next;
             free(map->map->map);
             map->map->map = NULL;
             free(map->map);
-            map->map = head_map->next;
+            map->map = head_map;
         }
         ret++;
     }

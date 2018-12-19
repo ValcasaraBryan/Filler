@@ -33,10 +33,11 @@ int         chaleur_up(t_coor *map, int y)
     if (!map->map || !map->ennemi_list || !map->map_chaleur)
         return (0);
     x = 0;
-    while (++x < map->x_map - 1)
+    while (++x < map->x_map)
         if (map->ennemi_list[x][y] == y)
-            if (map->map_chaleur[x - 1][y] >= 0)
-                map->map_chaleur[x - 1][y] = 2;
+            if (x - 1 >= 0)
+                if (map->map_chaleur[x - 1][y] >= 0)
+                    map->map_chaleur[x - 1][y] = 2;
     return (1);
 }
 
@@ -49,8 +50,9 @@ int         chaleur_right(t_coor *map, int x)
     y = map->y_map - 1;
     while (y--)
         if (map->ennemi_list[x][y] == y)
-            if (map->map_chaleur[x][y + 1] >= 0)
-                map->map_chaleur[x][y + 1] = 2;
+            if (y + 1 < map->y_map)
+                if (map->map_chaleur[x][y + 1] >= 0)
+                    map->map_chaleur[x][y + 1] = 2;
     return (1);
 }
 
@@ -61,10 +63,11 @@ int         chaleur_left(t_coor *map, int x)
     if (!map->map || !map->ennemi_list || !map->map_chaleur)
         return (0);
     y = 0;
-    while (++y < map->y_map - 1)
+    while (++y < map->y_map)
         if (map->ennemi_list[x][y] == y)
-            if (map->map_chaleur[x][y - 1] >= 0)
-                map->map_chaleur[x][y - 1] = 2;
+            if (y - 1 >= 0)
+                if (map->map_chaleur[x][y - 1] >= 0)
+                    map->map_chaleur[x][y - 1] = 2;
     return (1);
 }
 
@@ -76,12 +79,12 @@ int         after_mappage(t_coor *map)
 
     if (!map->map_chaleur)
         return (0);
-    val = map->x_map + map->y_map + 1;
+    val = (map->x_map + map->y_map) * 2;
     x = -1;
-    while (++x < map->x_map - 1)
+    while (++x < map->x_map)
     {
         y = -1;
-        while (++y < map->y_map - 1)
+        while (++y < map->y_map)
             if (map->map_chaleur[x][y] == 0)
                 map->map_chaleur[x][y] = val;
     }

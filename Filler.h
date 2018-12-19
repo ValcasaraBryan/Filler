@@ -81,9 +81,9 @@ int         map_chaleur_horizontal(t_coor *map);
 **          genere_list.c
 */
 t_map       *new_map(char *line);
+t_piece     *new_piece(char *line);
 t_map       *add_map(t_map *old, t_map *new);
 t_piece     *add_piece(t_piece *old, t_piece *new);
-t_piece     *new_piece(char *line);
 /*
 **          utils.c
 */
@@ -119,16 +119,17 @@ int         read_player(t_coor *map, t_coor_piece *piece, char *line);
 **          liberation.c
 */
 int         free_tab_int(int **tab, int size);
+int         free_line(char **line);
 int         free_tab_str(char **str);
 int         erase_list(t_coor *map, t_coor_piece *piece);
 /*
 **          parsing_map.c
 */
-int         parsing_map(t_coor *map, char *line);
+int         parsing_map(t_coor *map, char **line);
 /*
 **          parsing_piece.c
 */
-int         parsing_piece(t_coor_piece *piece, char *line);
+int         parsing_piece(t_coor_piece *piece, char **line);
 /*
 **          print_list.c
 */
