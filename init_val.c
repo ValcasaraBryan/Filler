@@ -14,7 +14,7 @@
 
 int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
 {
-    if (map && piece)
+    if (map && piece && player > 0)
     {
         map->map = NULL;
         piece->piece = NULL;
@@ -37,21 +37,32 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
         return (0);
 }
 
-int         read_player(t_coor *map, t_coor_piece *piece, char *line)
+int         read_player(t_coor *map, t_coor_piece *piece, char **line)
 {
     int     i;
-    if ((i = get_next_line(0, &line)) > 0)
+    int     player;
+
+    i = 0;
+    player = 0;
+    if ((i = get_next_line(0, line)) > 0)
     {
-        if (!(init_list_filler(map, piece, (ft_strstr(line, "p1")) ? 1 : 2)))
+        if (!ft_strstr(*line, "$$$ exec p"))
         {
-            ft_fprintf("Bad player info\n", 2);
-            exit(1);
+            free_line(line);
+            ft_putstr_fd("Bad player info\n", 2);
+            return (0);
         }
-        if (line)
+        if (ft_strstr(*line, "p1"))
+            player = 1;
+        else if (ft_strstr(*line, "p2"))
+            player = 2;
+        if (!(init_list_filler(map, piece, player)))
         {
-            free(line);
-            line = NULL;
+            free_line(line);
+            ft_putstr_fd("Bad player info\n", 2);
+            return (0);
         }
+        free_line(line);
     }
     return (i);
 }

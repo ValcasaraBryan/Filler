@@ -20,11 +20,8 @@ int         main(void)
     t_coor_piece    piece;
 
     etapes = 0;
-    if (get_next_line(0, &line))
-    {
-        init_list_filler(&map, &piece, (ft_strstr(line, "p1")) ? 1 : 2);
-        free_line(&line);
-    }
+    if (!(read_player(&map, &piece, &line)))
+        return (0);
     while (get_next_line(0, &line))
     {
         etapes += parsing_map(&map, &line);
