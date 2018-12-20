@@ -40,7 +40,7 @@ int         check_around_pos(t_coor *map, t_coor_piece *piece)
     if (!(map->map_chaleur) || !(piece->pos_stars))
         return (0);
     x = -1;
-    best_pos = (map->x_map + map->y_map ) * 2 + 1;
+    best_pos = (map->x_map * map->y_map) + 1;
     i = best_pos;
     while (++x < map->x_map)
     {

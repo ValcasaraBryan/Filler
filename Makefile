@@ -52,7 +52,7 @@ comp :
 
 exe : comp
 	@echo "" > res
-	@./resources/filler_vm -f resources/maps/map02 -p1 "valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes resources/players/virtual.filler" -p2 resources/players/grati.filler > coucou
+	@./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes resources/players/virtual.filler" -p2 resources/players/grati.filler
 
 std_2 : comp
 	@echo "" > res
