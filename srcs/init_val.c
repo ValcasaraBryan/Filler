@@ -34,7 +34,7 @@ int         init_list_filler(t_coor *map, t_coor_piece *piece, int player)
         return (1);
     }
     else
-        return (0);
+        return (-1);
 }
 
 int         read_player(t_coor *map, t_coor_piece *piece, char **line)
@@ -49,7 +49,7 @@ int         read_player(t_coor *map, t_coor_piece *piece, char **line)
         if (!ft_strstr(*line, "$$$ exec p"))
         {
             free_line(line);
-            ft_putstr_fd("Bad player info\n", 2);
+            perror("Bad player info\n");
             return (0);
         }
         if (ft_strstr(*line, "p1"))
@@ -59,7 +59,7 @@ int         read_player(t_coor *map, t_coor_piece *piece, char **line)
         if (!(init_list_filler(map, piece, player)))
         {
             free_line(line);
-            ft_putstr_fd("Bad player info\n", 2);
+            perror("Bad player info\n");
             return (0);
         }
         free_line(line);

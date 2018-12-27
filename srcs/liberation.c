@@ -43,7 +43,7 @@ int         free_tab_str(char **str)
 
     i = -1;
     if (!str)
-        return (-1);
+        return (0);
     else
     {
         while (str[++i])

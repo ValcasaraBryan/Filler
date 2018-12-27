@@ -77,7 +77,7 @@ int         after_mappage(t_coor *map)
     int     y;
     int     val;
 
-    if (!map->map_chaleur)
+    if (!map->map_chaleur || map->x_map < 0 || map->y_map < 0)
         return (0);
     val = (map->x_map + map->y_map) * 2;
     x = -1;

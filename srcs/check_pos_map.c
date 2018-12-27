@@ -16,8 +16,6 @@ int         best_position(t_coor *map, int x, int y, int val)
 {
     int     tmp;
 
-    if (!(map->map_chaleur))
-        return (-1);
     tmp = -1;
     if (y + 1 < map->y_map)
         val = ((tmp = map->map_chaleur[x][y + 1]) >= 0 && val > tmp) ? tmp : val;
@@ -55,6 +53,8 @@ int         check_around_pos(t_coor *map, t_coor_piece *piece)
                 best_pos = i;
             }
     }
+    if (best_pos == (map->x_map * map->y_map) + 1)
+        return (0);
     if (piece->y_best_pos >= 0 && piece->y_best_pos < map->y_map)
         if (piece->x_best_pos >= 0 && piece->x_best_pos < map->x_map)
             if (piece->y_best_pos == piece->last_best_pos[piece->x_best_pos][piece->y_best_pos])

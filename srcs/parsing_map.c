@@ -29,11 +29,11 @@ int         parsing_map(t_coor *map, char **line)
         map->y_map = ft_atoi(tab[2]);
         free_tab_str(tab);
         if (!(map->map_chaleur = (int **)malloc(sizeof (int *) * map->x_map)))
-            return (-1);
+            return (0);
         if (!(map->me_list = (int **)malloc(sizeof(int *) * map->x_map)))
-            return (-1);
+            return (0);
         if (!(map->ennemi_list = (int **)malloc(sizeof(int *) * map->x_map)))
-            return (-1);
+            return (0);
         get_next_line(0, line);
         free_line(line);
         while (++i < map->x_map && get_next_line(0, line))

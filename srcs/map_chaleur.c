@@ -27,20 +27,21 @@ int         map_chaleur_horizontal(t_coor *map)
     int     x;
     int     y;
 
-    if (!map->me_list || !map->ennemi_list)
+    if (!map->me_list || !map->ennemi_list || map->y_map < 0 || map->x_map < 0)
         return (0);
     x = -1;
     while (++x < map->x_map)
     {
         y = -1;
         if (!(map->map_chaleur[x] = (int *)malloc(sizeof(int) * map->y_map)))
-            return (-1);
+            return (0);
         while (++y < map->y_map)
-            map->map_chaleur[x][y] = (map->me_list[x][y] == y || map->ennemi_list[x][y] == y) ? val_player_fct(map, x, y) : 0;
+            map->map_chaleur[x][y] = (map->me_list[x][y] == y
+                || map->ennemi_list[x][y] == y) ? val_player_fct(map, x, y) : 0;
         if (!(chaleur_left(map, x)))
-            ft_fprintf("error chaleur_left\n", 2);
+            return (0);
         if (!(chaleur_right(map, x)))
-            ft_fprintf("error chaleur_right\n", 2);
+            return (0);
     }
     return (1);
 }
@@ -49,15 +50,15 @@ int         map_chaleur_vertical(t_coor *map)
 {
     int     y;
 
-    if (!map->map_chaleur || !map->y_map || !map->x_map)
-        return (0);
+    if (!map->map_chaleur || map->y_map < 0 || map->x_map < 0)
+        return (-1);
     y = -1;
     while (++y < map->y_map)
     {
         if (!(chaleur_up(map, y)))
-            ft_fprintf("error chaleur_up\n", 2);
+            return (0);
         if (!(chaleur_down(map, y)))
-            ft_fprintf("error chaleur_down\n", 2);
+            return (0);
     }
     return (1);
 }

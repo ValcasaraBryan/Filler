@@ -10,60 +10,50 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = resources/players/virtual.filler
+NAME = brvalcas.filler
 
-SRC =	main.c\
-		mappage.c\
-		before_mappage.c\
-		map_chaleur.c\
-		genere_list.c\
-		utils.c\
-		allocation.c\
-		check_chaleur.c\
-		check_pos_map.c\
-		init_val.c\
-		liberation.c\
-		parsing_map.c\
-		parsing_piece.c\
-		print_list.c
+SRC =	srcs/main.c\
+		srcs/mappage.c\
+		srcs/before_mappage.c\
+		srcs/map_chaleur.c\
+		srcs/genere_list.c\
+		srcs/utils.c\
+		srcs/allocation.c\
+		srcs/check_chaleur.c\
+		srcs/check_pos_map.c\
+		srcs/init_val.c\
+		srcs/liberation.c\
+		srcs/parsing_map.c\
+		srcs/parsing_piece.c\
 
 LIB = libft/libft.a
 
-EXE = 0
-
-ARG = 0
-ARG_2 = 0
-
-HEAD = -I Filler.h
-
-CC = gcc
+LIB_FILLER = Filler.a
 
 OBJET = $(SRC:.c=.o)
 
-FLAG = -Wall -Wextra -Werror
+INCLUDES = includes
+
+CFLAGS = -Wall -Wextra -Werror -I $(INCLUDES)
+CC = gcc
 
 all : $(NAME)
 
-$(NAME) :
-	make -C libft/
+$(OBJET):$(INCLUDES)
 
-comp :
-	@$(CC) $(FLAG) $(HEAD) $(SRC) $(LIB) -o $(NAME)
-
-exe : comp
-	@echo "" > res
-	@./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes resources/players/virtual.filler" -p2 resources/players/abanlin.filler
-
-std_2 : comp
-	@echo "" > res
-	@./resources/filler_vm -f resources/maps/map01 -p1 resources/players/virtual.filler -p2 resources/players/abanlin.filler | grep "test"
-
+$(NAME) : $(OBJET)
+	@make -C libft
+	@ar rc $(LIB_FILLER) $^
+	@ranlib $(LIB_FILLER)
+	@$(CC) $(CFLAGS) $(LIB) $(LIB_FILLER) -o $@
 
 clean :
 	@rm -f $(OBJET)
+	@make clean -C libft
 
 fclean : clean
 	@rm -f $(NAME)
-	@rm -f $(EXE)
+	@rm -f $(LIB_FILLER)
+	@make fclean -C libft
 
 re : fclean all

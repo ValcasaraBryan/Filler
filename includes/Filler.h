@@ -13,10 +13,9 @@
 #ifndef FILLER_H
 # define FILLER_H
 
-# include "libft/includes/libft.h"
-# include "libft/includes/get_next_line.h"
-# include "libft/includes/ft_printf.h"
-# include <stdio.h>
+# include "../libft/includes/libft.h"
+# include "../libft/includes/get_next_line.h"
+# include "../libft/includes/ft_printf.h"
 
 typedef struct          s_map
 {

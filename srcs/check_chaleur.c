@@ -18,7 +18,7 @@ int         next_pos_stars(t_coor *map, t_coor_piece *piece)
     int     y;
 
     if (!(piece->pos_stars) || !(piece->final_pos))
-        return (-1);
+        return (0);
     x = -1;
     while (++x < piece->x_piece)
     {
@@ -40,7 +40,7 @@ int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y)
     int     tmp;
 
     if (!(map->map_chaleur) || !(piece->pos_stars))
-        return (-1);
+        return (0);
     x_piece = -1;
     val = map->x_map * map->y_map;
     tmp = val - 1;
@@ -71,7 +71,7 @@ int         check_pos_final(t_coor *map, t_coor_piece *piece)
     int     tmp;
 
     if (!(map->map_chaleur) || !(piece->final_pos) || !(map->me_list))
-        return (-1);
+        return (0);
     x = -1;
     val = map->x_map * map->y_map;
     tmp = val;
@@ -89,7 +89,6 @@ int         check_pos_final(t_coor *map, t_coor_piece *piece)
                     piece->y_final_pos = y;
                 }
             }
-
     }
     return (1);
 }

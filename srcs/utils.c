@@ -20,6 +20,8 @@ int         nb_tab(t_coor *map, int **tab)
 
     x = -1;
     i = 0;
+    if (!tab)
+        return (0);
     while (++x < map->x_map)
     {
         y = -1;

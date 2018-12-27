@@ -29,7 +29,7 @@ int         parsing_piece(t_coor_piece *piece, char **line)
         piece->y_piece = ft_atoi(tab[2]);
         free_tab_str(tab);
         if (!(piece->pos_stars = (int **)malloc(sizeof (int *) * piece->x_piece)))
-            return (-1);
+            return (0);
         while (++i < piece->x_piece && get_next_line(0, line))
         {
             piece->piece = add_piece(piece->piece, new_piece(ft_strdup(*line)));

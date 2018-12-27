@@ -39,7 +39,7 @@ int         check_position_right_down(t_coor *map)
     int     y;
     int     val;
 
-    if (!map->map_chaleur)
+    if (!map->map_chaleur || map->x_map < 0 || map->y_map < 0)
         return (0);
     x = -1;
     while (++x < map->x_map)
@@ -65,7 +65,7 @@ int         check_position_left_up(t_coor *map)
     int     y;
     int     val;
 
-    if (!map->map_chaleur)
+    if (!map->map_chaleur || map->x_map < 0 || map->y_map < 0)
         return (0);
     x = map->x_map - 1;
     while (--x >= 0)
@@ -91,7 +91,7 @@ int         check_position_right_up(t_coor *map)
     int     y;
     int     val;
 
-    if (!map->map_chaleur)
+    if (!map->map_chaleur || map->x_map < 0 || map->y_map < 0)
         return (0);
     x = map->x_map - 1;
     while (--x >= 0)
@@ -117,7 +117,7 @@ int         check_position_left_down(t_coor *map)
     int     y;
     int     val;
 
-    if (!map->map_chaleur)
+    if (!map->map_chaleur || map->x_map < 0 || map->y_map < 0)
         return (0);
     x = -1;
     while (++x < map->x_map)
