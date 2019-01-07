@@ -6,7 +6,7 @@
 /*   By: brvalcas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/17 20:10:36 by brvalcas          #+#    #+#             */
-/*   Updated: 2019/01/07 15:26:45 by brvalcas         ###   ########.fr       */
+/*   Updated: 2019/01/07 15:47:17 by brvalcas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,25 @@ int			best_position(t_coor *map, int x, int y, int val)
 
 	tmp = -1;
 	if (y + 1 < map->y_map)
-		val = ((tmp = map->map_chaleur[x][y + 1]) >= 0 && val > tmp) ? tmp : val;
+	{
+		tmp = map->map_chaleur[x][y + 1];
+		val = (tmp >= 0 && val > tmp) ? tmp : val;
+	}
 	if (y - 1 >= 0)
-		val = ((tmp = map->map_chaleur[x][y - 1]) >= 0 && val > tmp) ? tmp : val;
+	{
+		tmp = map->map_chaleur[x][y - 1];
+		val = (tmp >= 0 && val > tmp) ? tmp : val;
+	}
 	if (x + 1 < map->x_map)
-		val = ((tmp = map->map_chaleur[x + 1][y]) >= 0 && val > tmp) ? tmp : val;
+	{
+		tmp = map->map_chaleur[x + 1][y];
+		val = (tmp >= 0 && val > tmp) ? tmp : val;
+	}
 	if (x - 1 >= 0)
-		val = ((tmp = map->map_chaleur[x - 1][y]) >= 0 && val > tmp) ? tmp : val;
+	{
+		tmp = map->map_chaleur[x - 1][y];
+		val = (tmp >= 0 && val > tmp) ? tmp : val;
+	}
 	return (val);
 }
 
@@ -46,10 +58,9 @@ int			check_around_pos(t_coor *map, t_coor_piece *piece)
 		while (++y < map->y_map)
 			if (map->me_list[x][y] != -1 && piece->last_best_pos[x][y] == -1)
 			{
-				piece->y_best_pos = ((i = best_position(map, x, y, best_pos))
-						< best_pos) ? y : piece->y_best_pos;
-				piece->x_best_pos = ((i = best_position(map, x, y, best_pos))
-						< best_pos) ? x : piece->x_best_pos;
+				i = best_position(map, x, y, best_pos);
+				piece->y_best_pos = (i < best_pos) ? y : piece->y_best_pos;
+				piece->x_best_pos = (i < best_pos) ? x : piece->x_best_pos;
 				best_pos = i;
 			}
 	}
@@ -63,7 +74,7 @@ int			check_around_pos(t_coor *map, t_coor_piece *piece)
 }
 
 int			check_arount_best_pos_piece(t_coor *map, t_coor_piece *piece,
-			int x, int y)
+		int x, int y)
 {
 	int		val_pos;
 	int		x_stars;

@@ -102,7 +102,7 @@ int					main(void)
 			while (piece.x_final_pos == -1 && piece.y_final_pos == -1)
 			{
 				if (!(check_around_pos(&map, &piece)))
-					break;
+					break ;
 				next_pos_stars(&map, &piece);
 				check_around_best_pos(&map, &piece);
 				if (!nb_tab(&map, piece.final_pos))
@@ -111,7 +111,7 @@ int					main(void)
 							piece.last_best_pos[piece.x_best_pos][piece.y_best_pos] = piece.y_best_pos;
 				check_pos_final(&map, &piece);
 				if (nb_tab(&map, map.me_list) > ((map.x_map / 2) * map.y_map) + (map.x_map % 2))
-					break;
+					break ;
 			}
 			etapes = 0;
 			erase_all_malloc(&map, &piece, &line);
@@ -120,7 +120,7 @@ int					main(void)
 			else
 			{
 				ft_print(0, 0);
-				break;
+				break ;
 			}
 			piece.y_final_pos = -1;
 			piece.x_final_pos = -1;
