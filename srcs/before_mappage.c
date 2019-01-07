@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Filler.h"
+#include "filler.h"
 
 int			chaleur_down(t_coor *map, int y)
 {

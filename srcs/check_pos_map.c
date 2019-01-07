@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Filler.h"
+#include "filler.h"
 
 int			best_position(t_coor *map, int x, int y, int val)
 {
@@ -68,7 +68,8 @@ int			check_around_pos(t_coor *map, t_coor_piece *piece)
 		return (0);
 	if (piece->y_best_pos >= 0 && piece->y_best_pos < map->y_map)
 		if (piece->x_best_pos >= 0 && piece->x_best_pos < map->x_map)
-			if (piece->y_best_pos == piece->last_best_pos[piece->x_best_pos][piece->y_best_pos])
+			if (piece->y_best_pos == piece->last_best_pos[piece->x_best_pos]
+				[piece->y_best_pos])
 				return (0);
 	return (1);
 }
@@ -86,7 +87,6 @@ int			check_arount_best_pos_piece(t_coor *map, t_coor_piece *piece,
 	{
 		y_stars = -1;
 		while (++y_stars < piece->y_piece)
-		{
 			if (piece->pos_stars[x_stars][y_stars] != -1)
 			{
 				if (x_stars + x >= map->x_map || y_stars + y >= map->y_map)
@@ -100,7 +100,6 @@ int			check_arount_best_pos_piece(t_coor *map, t_coor_piece *piece,
 				else if (map->map_chaleur[x_stars + x][y_stars + y] == -2)
 					piece->final_pos[x][y] = -1;
 			}
-		}
 	}
 	return (1);
 }

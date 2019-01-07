@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Filler.h"
+#include "filler.h"
 
 int			free_tab_int(int **tab, int size)
 {
@@ -56,15 +56,11 @@ int			free_tab_str(char **str)
 	return (i);
 }
 
-int			erase_list(t_coor *map, t_coor_piece *piece)
+int			erase_map(t_coor *map)
 {
-	int		ret;
 	t_map	*head_map;
-	t_piece	*head_piece;
 
-	ret = 0;
 	head_map = NULL;
-	head_piece = NULL;
 	if (map->map)
 	{
 		while (map->map)
@@ -75,8 +71,16 @@ int			erase_list(t_coor *map, t_coor_piece *piece)
 			free(map->map);
 			map->map = head_map;
 		}
-		ret++;
+		return (1);
 	}
+	return (0);
+}
+
+int			erase_piece(t_coor_piece *piece)
+{
+	t_piece	*head_piece;
+
+	head_piece = NULL;
 	if (piece->piece)
 	{
 		while (piece->piece)
@@ -87,7 +91,7 @@ int			erase_list(t_coor *map, t_coor_piece *piece)
 			free(piece->piece);
 			piece->piece = head_piece;
 		}
-		ret++;
+		return (1);
 	}
-	return (ret);
+	return (0);
 }

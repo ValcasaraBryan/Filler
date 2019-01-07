@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Filler.h"
+#include "filler.h"
 
 int			val_player_fct(t_coor *map, int x, int y)
 {

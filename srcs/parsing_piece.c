@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Filler.h"
+#include "filler.h"
 
 int			parsing_piece(t_coor_piece *piece, char **line)
 {

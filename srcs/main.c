@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Filler.h"
+#include "filler.h"
 
 int					erase_all_malloc(t_coor *map,
 		t_coor_piece *piece, char **line)

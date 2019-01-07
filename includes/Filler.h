@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Filler.h                                           :+:      :+:    :+:   */
+/*   filler.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: brvalcas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/03 14:51:59 by brvalcas          #+#    #+#             */
-/*   Updated: 2018/12/03 14:52:04 by brvalcas         ###   ########.fr       */
+/*   Updated: 2019/01/07 17:07:47 by brvalcas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,120 +17,121 @@
 # include "../libft/includes/get_next_line.h"
 # include "../libft/includes/ft_printf.h"
 
-typedef struct          s_map
+typedef struct			s_map
 {
-    char                *map;
-    struct s_map        *next;
-}                       t_map;
+	char				*map;
+	struct s_map		*next;
+}						t_map;
 
-typedef struct          s_tailles_map
+typedef struct			s_tailles_map
 {
-    int                 x_map;
-    int                 y_map;
-    int                 **map_chaleur;
-    char                me;
-    char                ennemi;
-    struct  s_map       *map;
-    int                 **me_list;
-    int                 **ennemi_list;
-}                       t_coor;
+	int					x_map;
+	int					y_map;
+	int					**map_chaleur;
+	char				me;
+	char				ennemi;
+	struct s_map		*map;
+	int					**me_list;
+	int					**ennemi_list;
+}						t_coor;
 
-typedef struct          s_piece
+typedef struct			s_piece
 {
-    char                *piece;
-    struct s_piece      *next;
-}                       t_piece;
+	char				*piece;
+	struct s_piece		*next;
+}						t_piece;
 
-typedef struct          s_tailles_piece
+typedef struct			s_tailles_piece
 {
-    int                 x_piece;
-    int                 y_piece;
-    int                 x_best_pos;
-    int                 y_best_pos;
-    int                 x_final_pos;
-    int                 y_final_pos;
-    int                 **last_best_pos;
-    int                 **pos_stars;
-    int                 **final_pos;
-    struct s_piece      *piece;
-}                       t_coor_piece;
+	int					x_piece;
+	int					y_piece;
+	int					x_best_pos;
+	int					y_best_pos;
+	int					x_final_pos;
+	int					y_final_pos;
+	int					**last_best_pos;
+	int					**pos_stars;
+	int					**final_pos;
+	struct s_piece		*piece;
+}						t_coor_piece;
 /*
 **          mappage.c
 */
-int         val_around(t_coor *map, int val, int x, int y);
-int         check_position_right_down(t_coor *map);
-int         check_position_left_up(t_coor *map);
-int         check_position_right_up(t_coor *map);
-int         check_position_left_down(t_coor *map);
+int						val_around(t_coor *map, int val, int x, int y);
+int						check_position_right_down(t_coor *map);
+int						check_position_left_up(t_coor *map);
+int						check_position_right_up(t_coor *map);
+int						check_position_left_down(t_coor *map);
 /*
 **          before_mappage.c
 */
-int         chaleur_down(t_coor *map, int y);
-int         chaleur_up(t_coor *map, int y);
-int         chaleur_right(t_coor *map, int x);
-int         chaleur_left(t_coor *map, int x);
-int         after_mappage(t_coor *map);
+int						chaleur_down(t_coor *map, int y);
+int						chaleur_up(t_coor *map, int y);
+int						chaleur_right(t_coor *map, int x);
+int						chaleur_left(t_coor *map, int x);
+int						after_mappage(t_coor *map);
 /*
 **          map_chaleur.c
 */
-int         val_player_fct(t_coor *map, int x, int y);
-int         map_chaleur_vertical(t_coor *map);
-int         map_chaleur_horizontal(t_coor *map);
+int						val_player_fct(t_coor *map, int x, int y);
+int						map_chaleur_vertical(t_coor *map);
+int						map_chaleur_horizontal(t_coor *map);
 /*
 **          genere_list.c
 */
-t_map       *new_map(char *line);
-t_piece     *new_piece(char *line);
-t_map       *add_map(t_map *old, t_map *new);
-t_piece     *add_piece(t_piece *old, t_piece *new);
+t_map					*new_map(char *line);
+t_piece					*new_piece(char *line);
+t_map					*add_map(t_map *old, t_map *new);
+t_piece					*add_piece(t_piece *old, t_piece *new);
 /*
 **          utils.c
 */
-int         nb_tab(t_coor *map, int **tab);
-void        ft_print(int x, int y);
+int						erase_list(t_coor *map, t_coor_piece *piece);
+int						nb_tab(t_coor *map, int **tab);
+void					ft_print(int x, int y);
 /*
 **          allocation.c
 */
-int         tab_int(t_coor *map, char char_of_player);
-int         init_last_best_pos(t_coor *map, t_coor_piece *piece);
-int         final_pos_piece(t_coor *map, t_coor_piece *piece);
-int         pos_piece(t_coor_piece *piece);
+int						tab_int(t_coor *map, char char_of_player);
+int						init_last_best_pos(t_coor *map, t_coor_piece *piece);
+int						final_pos_piece(t_coor *map, t_coor_piece *piece);
+int						pos_piece(t_coor_piece *piece);
 /*
 **          check_chaleur.c
 */
-int         next_pos_stars(t_coor *map, t_coor_piece *piece);
-int         check_chaleur_piece(t_coor *map, t_coor_piece *piece, int x, int y);
-int         check_pos_final(t_coor *map, t_coor_piece *piece);
+int						next_pos_stars(t_coor *map, t_coor_piece *piece);
+int						check_chaleur_piece(t_coor *map, t_coor_piece *piece,
+		int x, int y);
+int						check_pos_final(t_coor *map, t_coor_piece *piece);
 /*
 **          check_pos_map.c
 */
-int         best_position(t_coor *map, int x, int y, int val);
-int         check_around_pos(t_coor *map, t_coor_piece *piece);
-int         check_arount_best_pos_piece(t_coor *map, t_coor_piece *piece,
-            int x, int y);
-int         check_around_best_pos(t_coor *map, t_coor_piece *piece);
+int						best_position(t_coor *map, int x, int y, int val);
+int						check_around_pos(t_coor *map, t_coor_piece *piece);
+int						check_arount_best_pos_piece(t_coor *map,
+		t_coor_piece *piece, int x, int y);
+int						check_around_best_pos(t_coor *map, t_coor_piece *piece);
 /*
 **          init_val.c
 */
-int         init_list_filler(t_coor *map, t_coor_piece *piece, int player);
-int         read_player(t_coor *map, t_coor_piece *piece, char **line);
+int						init_list_filler(t_coor *map,
+		t_coor_piece *piece, int player);
+int						read_player(t_coor *map, t_coor_piece
+						*piece, char **line);
 /*
 **          liberation.c
 */
-int         free_tab_int(int **tab, int size);
-int         free_line(char **line);
-int         free_tab_str(char **str);
-int         erase_list(t_coor *map, t_coor_piece *piece);
+int						free_tab_int(int **tab, int size);
+int						free_line(char **line);
+int						free_tab_str(char **str);
+int						erase_map(t_coor *map);
+int						erase_piece(t_coor_piece *piece);
 /*
 **          parsing_map.c
 */
-int         parsing_map(t_coor *map, char **line);
+int						parsing_map(t_coor *map, char **line);
 /*
 **          parsing_piece.c
 */
-int         parsing_piece(t_coor_piece *piece, char **line);
-/*
-**          print_list.c
-*/
-void        print_fd(int fd, t_coor map, t_coor_piece piece);
+int						parsing_piece(t_coor_piece *piece, char **line);
 #endif

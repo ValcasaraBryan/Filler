@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Filler.h"
+#include "filler.h"
 
 int			tab_int(t_coor *map, char char_of_player)
 {
@@ -50,7 +50,8 @@ int			init_last_best_pos(t_coor *map, t_coor_piece *piece)
 	while (++x < map->x_map)
 	{
 		y = -1;
-		if (!(piece->last_best_pos[x] = (int *)malloc(sizeof(int) * map->y_map)))
+		if (!(piece->last_best_pos[x] =
+			(int *)malloc(sizeof(int) * map->y_map)))
 			return (0);
 		while (++y < map->y_map)
 			piece->last_best_pos[x][y] = -1;
@@ -90,7 +91,8 @@ int			pos_piece(t_coor_piece *piece)
 	while (head)
 	{
 		y = -1;
-		if (!(piece->pos_stars[x] = (int *)malloc(sizeof(int) * piece->y_piece)))
+		if (!(piece->pos_stars[x] =
+				(int *)malloc(sizeof(int) * piece->y_piece)))
 			return (0);
 		while (head->piece[++y])
 			piece->pos_stars[x][y] = (head->piece[y] == '*') ? y : -1;
