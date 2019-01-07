@@ -40,6 +40,18 @@ int			best_position(t_coor *map, int x, int y, int val)
 	return (val);
 }
 
+int			check_overflow(t_coor *map, t_coor_piece *piece, int best_pos)
+{
+	if (best_pos == (map->x_map * map->y_map) + 1)
+		return (0);
+	if (piece->y_best_pos >= 0 && piece->y_best_pos < map->y_map)
+		if (piece->x_best_pos >= 0 && piece->x_best_pos < map->x_map)
+			if (piece->y_best_pos == piece->last_best_pos[piece->x_best_pos]
+				[piece->y_best_pos])
+				return (0);
+	return (1);
+}
+
 int			check_around_pos(t_coor *map, t_coor_piece *piece)
 {
 	int		i;
@@ -64,13 +76,8 @@ int			check_around_pos(t_coor *map, t_coor_piece *piece)
 				best_pos = i;
 			}
 	}
-	if (best_pos == (map->x_map * map->y_map) + 1)
+	if (!(check_overflow(map, piece, best_pos)))
 		return (0);
-	if (piece->y_best_pos >= 0 && piece->y_best_pos < map->y_map)
-		if (piece->x_best_pos >= 0 && piece->x_best_pos < map->x_map)
-			if (piece->y_best_pos == piece->last_best_pos[piece->x_best_pos]
-				[piece->y_best_pos])
-				return (0);
 	return (1);
 }
 

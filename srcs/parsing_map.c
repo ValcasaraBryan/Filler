@@ -6,23 +6,37 @@
 /*   By: brvalcas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/17 20:14:40 by brvalcas          #+#    #+#             */
-/*   Updated: 2019/01/07 15:15:38 by brvalcas         ###   ########.fr       */
+/*   Updated: 2019/01/07 17:41:10 by brvalcas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
+int			read_map(t_coor *map, char **line)
+{
+	char	**tab;
+	int		i;
+
+	i = -1;
+	while (++i < map->x_map && get_next_line(0, line))
+	{
+		tab = ft_strsplit(*line, ' ');
+		free_line(line);
+		if (tab[1])
+			map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
+		free_tab_str(tab);
+	}
+	return (1);
+}
+
 int			parsing_map(t_coor *map, char **line)
 {
-	int		i;
 	char	**tab;
 
-	tab = NULL;
 	if (!(*line))
 		return (0);
 	if (ft_strstr(*line, "Plateau"))
 	{
-		i = -1;
 		tab = ft_strsplit(*line, ' ');
 		free_line(line);
 		map->x_map = ft_atoi(tab[1]);
@@ -36,14 +50,7 @@ int			parsing_map(t_coor *map, char **line)
 			return (0);
 		get_next_line(0, line);
 		free_line(line);
-		while (++i < map->x_map && get_next_line(0, line))
-		{
-			tab = ft_strsplit(*line, ' ');
-			free_line(line);
-			if (tab[1])
-				map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
-			free_tab_str(tab);
-		}
+		read_map(map, line);
 		return (1);
 	}
 	return (0);

@@ -107,6 +107,8 @@ int						check_pos_final(t_coor *map, t_coor_piece *piece);
 **          check_pos_map.c
 */
 int						best_position(t_coor *map, int x, int y, int val);
+int						check_overflow(t_coor *map, t_coor_piece *piece,
+		int best_pos);
 int						check_around_pos(t_coor *map, t_coor_piece *piece);
 int						check_arount_best_pos_piece(t_coor *map,
 		t_coor_piece *piece, int x, int y);
