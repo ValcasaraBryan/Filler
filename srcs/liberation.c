@@ -17,10 +17,11 @@ int			free_tab_int(int **tab, int size)
 	int		x;
 
 	x = -1;
-	if (!tab || size < 0)
+	if (!tab || size <= 0)
 		return (0);
 	while (++x < size)
-		free(tab[x]);
+		if (tab[x])
+			free(tab[x]);
 	free(tab);
 	return (1);
 }

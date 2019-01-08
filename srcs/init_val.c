@@ -17,10 +17,13 @@ int			init_list_filler(t_coor *map, t_coor_piece *piece, int player)
 	if (map && piece && player > 0)
 	{
 		map->map = NULL;
-		piece->piece = NULL;
 		map->map_chaleur = NULL;
 		map->me_list = NULL;
 		map->ennemi_list = NULL;
+		piece->piece = NULL;
+		piece->last_best_pos = NULL;
+		piece->pos_stars = NULL;
+		piece->final_pos = NULL;
 		map->x_map = -1;
 		map->y_map = -1;
 		map->me = (player == 1) ? 'O' : 'X';
@@ -34,7 +37,14 @@ int			init_list_filler(t_coor *map, t_coor_piece *piece, int player)
 		return (1);
 	}
 	else
-		return (-1);
+		return (0);
+}
+
+int			error(char **line)
+{
+	free_line(line);
+	perror("Bad player info ");
+	return (0);
 }
 
 int			read_player(t_coor *map, t_coor_piece *piece, char **line)
@@ -45,22 +55,15 @@ int			read_player(t_coor *map, t_coor_piece *piece, char **line)
 	player = 0;
 	if ((i = get_next_line(0, line)) > 0)
 	{
-		if (!ft_strstr(*line, "$$$ exec p"))
-		{
-			free_line(line);
-			perror("Bad player info\n");
-			return (0);
-		}
+		if (!ft_strstr(*line, "$$$ exec p")
+			&& !ft_strstr(*line, "brvalcas.filler"))
+			return (error(line));
 		if (ft_strstr(*line, "p1"))
 			player = 1;
 		else if (ft_strstr(*line, "p2"))
 			player = 2;
 		if (!(init_list_filler(map, piece, player)))
-		{
-			free_line(line);
-			perror("Bad player info\n");
-			return (0);
-		}
+			return (error(line));
 		free_line(line);
 	}
 	return (i);

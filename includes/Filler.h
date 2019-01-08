@@ -118,6 +118,7 @@ int						check_around_best_pos(t_coor *map, t_coor_piece *piece);
 */
 int						init_list_filler(t_coor *map,
 		t_coor_piece *piece, int player);
+int						error(char **line);
 int						read_player(t_coor *map, t_coor_piece
 						*piece, char **line);
 /*
@@ -136,4 +137,12 @@ int						parsing_map(t_coor *map, char **line);
 **          parsing_piece.c
 */
 int						parsing_piece(t_coor_piece *piece, char **line);
+/*
+**          main.c
+*/
+int						erase_all_malloc(t_coor *map,
+		t_coor_piece *piece, char **line);
+int						first_step(t_coor *map);
+int						second_step(t_coor *map, t_coor_piece *piece);
+
 #endif
