@@ -107,10 +107,13 @@ int					main(void)
 				check_around_best_pos(&map, &piece);
 				if (!nb_tab(&map, piece.final_pos))
 					if (piece.y_best_pos >= 0 && piece.y_best_pos < map.y_map)
-						if (piece.x_best_pos >= 0 && piece.x_best_pos < map.x_map)
-							piece.last_best_pos[piece.x_best_pos][piece.y_best_pos] = piece.y_best_pos;
+						if (piece.x_best_pos >= 0
+							&& piece.x_best_pos < map.x_map)
+							piece.last_best_pos[piece.x_best_pos]
+							[piece.y_best_pos] = piece.y_best_pos;
 				check_pos_final(&map, &piece);
-				if (nb_tab(&map, map.me_list) > ((map.x_map / 2) * map.y_map) + (map.x_map % 2))
+				if (nb_tab(&map, map.me_list) > ((map.x_map / 2)
+					* map.y_map) + (map.x_map % 2))
 					break ;
 			}
 			etapes = 0;
