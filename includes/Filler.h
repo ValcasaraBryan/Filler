@@ -15,7 +15,6 @@
 
 # include "../libft/includes/libft.h"
 # include "../libft/includes/get_next_line.h"
-# include "../libft/includes/ft_printf.h"
 
 typedef struct			s_file
 {
@@ -112,7 +111,7 @@ int						check_around_best_pos(t_coor *map, t_coor_piece *piece);
 **          init_val.c
 */
 int						init_list_filler(t_coor *map,
-							t_coor_piece *piece, int player);
+						t_coor_piece *piece, int player);
 int						error(char **line);
 t_file					*new_file(char *line);
 t_file					*add_file(t_file *file, char *line);
