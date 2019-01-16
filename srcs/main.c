@@ -100,8 +100,9 @@ int					main(int argc, char **argv)
 		return (0);
 	while (1)
 	{
-		file = read_fd(&map, &piece);
-		if (file)
+		if (!(file = read_fd(&map, &piece)))
+			break ;
+		else
 		{
 			if (!(alloc_first_step(&map)))
 			{
@@ -132,11 +133,10 @@ int					main(int argc, char **argv)
 				next_pos_stars(&map, &piece);
 				check_around_best_pos(&map, &piece);
 				if (!nb_tab(&map, piece.final_pos))
-					if (piece.y_best_pos >= 0 && piece.y_best_pos < map.y_map)
-						if (piece.x_best_pos >= 0
-							&& piece.x_best_pos < map.x_map)
-							piece.last_best_pos[piece.x_best_pos]
-							[piece.y_best_pos] = piece.y_best_pos;
+					if (piece.y_best_pos >= 0 && piece.y_best_pos < map.y_map
+					&& piece.x_best_pos >= 0 && piece.x_best_pos < map.x_map)
+						piece.last_best_pos[piece.x_best_pos]
+						[piece.y_best_pos] = piece.y_best_pos;
 				check_pos_final(&map, &piece);
 				if (nb_tab(&map, map.me_list) > ((map.x_map / 2)
 					* map.y_map) + (map.x_map % 2))
@@ -148,15 +148,10 @@ int					main(int argc, char **argv)
 			if (piece.x_final_pos >= 0 && piece.y_final_pos >= 0)
 				ft_print(piece.x_final_pos, piece.y_final_pos);
 			else
-			{
-				ft_print(0, 0);
-				return (0);
-			}
+				return (ft_print(0, 0));
 			piece.y_final_pos = -1;
 			piece.x_final_pos = -1;
 		}
-		else
-			break ;
 	}
 	erase_file(file);
 	return (0);

@@ -44,10 +44,11 @@ int			nb_tab_str(char **tab)
 	return (i);
 }
 
-void		ft_print(int x, int y)
+int			ft_print(int x, int y)
 {
 	ft_putnbr(x);
 	ft_putchar(' ');
 	ft_putnbr(y);
 	ft_putchar('\n');
+	return (0);
 }

@@ -82,7 +82,7 @@ int						check_y_map(char *str, size_t len);
 */
 int						nb_tab(t_coor *map, int **tab);
 int						nb_tab_str(char **tab);
-void					ft_print(int x, int y);
+int						ft_print(int x, int y);
 /*
 **          allocation.c
 */
@@ -126,6 +126,9 @@ int						erase_file(t_file *file);
 /*
 **          parsing_map.c
 */
+int						plateau_val(t_coor *map, char *line);
+int						norm(char ***tab);
+int						norm_two(char ***tab);
 int						parsing_map(t_coor *map, char *line);
 /*
 **          parsing_piece.c
