@@ -12,10 +12,10 @@
 
 #include "filler.h"
 
-char	**tab_char(size_t len)
+char		**tab_char(size_t len)
 {
 	char	**tab;
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	tab = NULL;
@@ -27,9 +27,9 @@ char	**tab_char(size_t len)
 	return (tab);
 }
 
-int		check_tab(char **tab)
+int			check_tab(char **tab)
 {
-	int	i;
+	int		i;
 
 	if (!tab)
 		return (-1);
@@ -44,7 +44,7 @@ int		check_tab(char **tab)
 	return (i);
 }
 
-int		check_char_piece(char *str)
+int			check_char_piece(char *str)
 {
 	int		i;
 
@@ -57,7 +57,7 @@ int		check_char_piece(char *str)
 	return (1);
 }
 
-int		check_char(char *str)
+int			check_char(char *str)
 {
 	int		i;
 
@@ -70,7 +70,7 @@ int		check_char(char *str)
 	return (1);
 }
 
-int		check_y_map(char *str, size_t len)
+int			check_y_map(char *str, size_t len)
 {
 	int		i;
 	int		tmp;

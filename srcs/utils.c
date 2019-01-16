@@ -32,7 +32,7 @@ int			nb_tab(t_coor *map, int **tab)
 	return (i);
 }
 
-int						nb_tab_str(char **tab)
+int			nb_tab_str(char **tab)
 {
 	int		i;
 

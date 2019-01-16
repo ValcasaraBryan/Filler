@@ -43,40 +43,9 @@ int			init_list_filler(t_coor *map, t_coor_piece *piece, int player)
 int			error(char **line)
 {
 	free_line(line);
+	get_next_line(0, NULL);
 	perror("Bad player info ");
 	return (0);
-}
-
-int			read_player(t_coor *map, t_coor_piece *piece, char *argv)
-{
-	int		player;
-	char	*line;
-
-	player = 0;
-	if (!argv)
-		return (0);
-	if (get_next_line(0, &line) > 0)
-	{
-		if (!ft_strstr(line, "$$$ exec p")
-			&& !ft_strstr(argv, "brvalcas.filler"))
-		{
-			free_line(&line);
-			get_next_line(0, NULL);
-			return (0);
-		}
-		if (ft_strstr(line, "p1"))
-			player = 1;
-		else if (ft_strstr(line, "p2"))
-			player = 2;
-		if (!(init_list_filler(map, piece, player)))
-		{
-			free_line(&line);
-			get_next_line(0, NULL);
-			return (0);
-		}
-	}
-	free_line(&line);
-	return (1);
 }
 
 t_file		*new_file(char *line)
@@ -108,9 +77,9 @@ t_file		*add_file(t_file *file, char *line)
 
 t_file		*read_fd(t_coor *map, t_coor_piece *piece)
 {
-	char *line;
+	char	*line;
 	int		part;
-	t_file *file;
+	t_file	*file;
 
 	file = NULL;
 	line = NULL;

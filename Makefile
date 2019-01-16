@@ -16,7 +16,6 @@ SRC =	srcs/main.c\
 		srcs/mappage.c\
 		srcs/before_mappage.c\
 		srcs/map_chaleur.c\
-		srcs/genere_list.c\
 		srcs/utils.c\
 		srcs/allocation.c\
 		srcs/check_chaleur.c\
@@ -25,6 +24,7 @@ SRC =	srcs/main.c\
 		srcs/liberation.c\
 		srcs/parsing_map.c\
 		srcs/parsing_piece.c\
+		srcs/genere_list.c
 
 LIB = libft/libft.a
 
@@ -46,6 +46,15 @@ $(NAME) : $(OBJET)
 	@ar rc $(LIB_FILLER) $^
 	@ranlib $(LIB_FILLER)
 	@$(CC) $(CFLAGS) $(LIB) $(LIB_FILLER) -o $@
+
+exe :
+	make && mv brvalcas.filler resources/players/ && cat coucou | ./resources/players/brvalcas.filler
+
+exe_norm :
+	make && mv brvalcas.filler resources/players/ && ./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full --show-leak-kinds=all ./resources/players/brvalcas.filler" -p2 resources/players/abanlin.filler > 42
+
+norm :
+	norminette **/*[.c.h]
 
 clean :
 	@rm -f $(OBJET)

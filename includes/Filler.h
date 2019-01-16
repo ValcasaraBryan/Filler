@@ -74,13 +74,10 @@ int						map_chaleur_horizontal(t_coor *map);
 **          genere_list.c
 */
 char					**tab_char(size_t len);
-int						check_char_piece(char *str);
 int						check_tab(char **tab);
+int						check_char_piece(char *str);
 int						check_char(char *str);
 int						check_y_map(char *str, size_t len);
-t_file					*new_line(char *line);
-t_file					*add_pars(t_file *old, t_file *new);
-
 /*
 **          utils.c
 */
@@ -99,27 +96,27 @@ int						pos_piece(t_coor_piece *piece);
 */
 int						next_pos_stars(t_coor *map, t_coor_piece *piece);
 int						check_chaleur_piece(t_coor *map, t_coor_piece *piece,
-		int x, int y);
+						int x, int y);
 int						check_pos_final(t_coor *map, t_coor_piece *piece);
 /*
 **          check_pos_map.c
 */
 int						best_position(t_coor *map, int x, int y, int val);
 int						check_overflow(t_coor *map, t_coor_piece *piece,
-		int best_pos);
+						int best_pos);
 int						check_around_pos(t_coor *map, t_coor_piece *piece);
 int						check_arount_best_pos_piece(t_coor *map,
-		t_coor_piece *piece, int x, int y);
+						t_coor_piece *piece, int x, int y);
 int						check_around_best_pos(t_coor *map, t_coor_piece *piece);
 /*
 **          init_val.c
 */
 int						init_list_filler(t_coor *map,
-		t_coor_piece *piece, int player);
+							t_coor_piece *piece, int player);
 int						error(char **line);
-int						read_player(t_coor *map, t_coor_piece *piece, char *argv);
+t_file					*new_file(char *line);
+t_file					*add_file(t_file *file, char *line);
 t_file					*read_fd(t_coor *map, t_coor_piece *piece);
-
 /*
 **          liberation.c
 */
@@ -130,7 +127,6 @@ int						erase_file(t_file *file);
 /*
 **          parsing_map.c
 */
-int						read_map(t_coor *map, t_file *file);
 int						parsing_map(t_coor *map, char *line);
 /*
 **          parsing_piece.c
@@ -145,6 +141,6 @@ int						erase_all_malloc(t_coor *map,
 						t_coor_piece *piece);
 int						first_step(t_coor *map);
 int						second_step(t_coor *map, t_coor_piece *piece);
-
-
+int						read_player(t_coor *map, t_coor_piece *piece,
+						char *argv);
 #endif

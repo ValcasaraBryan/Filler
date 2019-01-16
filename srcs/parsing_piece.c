@@ -12,7 +12,7 @@
 
 #include "filler.h"
 
-int						parsing_piece(t_coor_piece *piece, char *line)
+int			parsing_piece(t_coor_piece *piece, char *line)
 {
 	char	**tab;
 	int		i;
@@ -35,7 +35,7 @@ int						parsing_piece(t_coor_piece *piece, char *line)
 		piece->piece[i] = ft_strdup(line);
 	else
 	{
-		perror("Error piece ---");
+		perror("Error piece");
 		return (0);
 	}
 	return (1);

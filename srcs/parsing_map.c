@@ -42,11 +42,11 @@ int			parsing_map(t_coor *map, char *line)
 		&& nb_of_line < map->x_map && !map->map[nb_of_line]
 		&& (int)ft_strlen(tab[1]) == map->y_map && check_char(tab[1])
 		&& ((nb_of_line > 0 && map->map[nb_of_line - 1]) || nb_of_line == 0))
-			map->map[nb_of_line] = ft_strdup(tab[1]);
+		map->map[nb_of_line] = ft_strdup(tab[1]);
 	else
 	{
 		free_tab_str(&tab);
-		perror("Error map ---");
+		perror("Error map");
 		return (0);
 	}
 	free_tab_str(&tab);
