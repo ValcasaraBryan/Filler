@@ -99,60 +99,18 @@ int					main(int argc, char **argv)
 	if (!(read_player(&map, &piece, argv[0])))
 		return (0);
 	while (1)
-	{
 		if (!(file = read_fd(&map, &piece)))
 			break ;
 		else
 		{
-			if (!(alloc_first_step(&map)))
-			{
-				perror("Error malloc map\n");
+			if (!(norm_main_alloc(&map, &piece)))
 				return (0);
-			}
-			if (!(first_step(&map)))
-			{
-				erase_all_malloc(&map, &piece);
-				perror("Error map\n");
-				return (0);
-			}
-			if (!(alloc_second_step(&map, &piece)))
-			{
-				perror("Error malloc piece\n");
-				return (0);
-			}
-			if (!(second_step(&map, &piece)))
-			{
-				erase_all_malloc(&map, &piece);
-				perror("Error piece\n");
-				return (0);
-			}
-			while (piece.x_final_pos == -1 && piece.y_final_pos == -1)
-			{
-				if (!(check_around_pos(&map, &piece)))
-					break ;
-				next_pos_stars(&map, &piece);
-				check_around_best_pos(&map, &piece);
-				if (!nb_tab(&map, piece.final_pos))
-					if (piece.y_best_pos >= 0 && piece.y_best_pos < map.y_map
-					&& piece.x_best_pos >= 0 && piece.x_best_pos < map.x_map)
-						piece.last_best_pos[piece.x_best_pos]
-						[piece.y_best_pos] = piece.y_best_pos;
-				check_pos_final(&map, &piece);
-				if (nb_tab(&map, map.me_list) > ((map.x_map / 2)
-					* map.y_map) + (map.x_map % 2))
-					break ;
-			}
+			norm_main_while(&map, &piece);
 			etapes = 0;
 			erase_file(file);
-			erase_all_malloc(&map, &piece);
-			if (piece.x_final_pos >= 0 && piece.y_final_pos >= 0)
-				ft_print(piece.x_final_pos, piece.y_final_pos);
-			else
-				return (ft_print(0, 0));
-			piece.y_final_pos = -1;
-			piece.x_final_pos = -1;
+			if (!(put_solve(&map, &piece)))
+				return (0);
 		}
-	}
 	erase_file(file);
 	return (0);
 }

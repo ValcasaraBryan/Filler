@@ -6,7 +6,7 @@
 /*   By: brvalcas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/03 14:51:59 by brvalcas          #+#    #+#             */
-/*   Updated: 2019/01/07 17:07:47 by brvalcas         ###   ########.fr       */
+/*   Updated: 2019/01/16 18:26:46 by brvalcas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,12 @@ int						parsing_map(t_coor *map, char *line);
 int						parsing_piece(t_coor_piece *piece, char *line);
 int						alloc_first_step(t_coor *map);
 int						alloc_second_step(t_coor *map, t_coor_piece *piece);
+/*
+**          norm_main.c
+*/
+int						norm_main_alloc(t_coor *map, t_coor_piece *piece);
+void					norm_main_while(t_coor *map, t_coor_piece *piece);
+int						put_solve(t_coor *map, t_coor_piece *piece);
 /*
 **          main.c
 */

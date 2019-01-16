@@ -24,7 +24,8 @@ SRC =	srcs/main.c\
 		srcs/liberation.c\
 		srcs/parsing_map.c\
 		srcs/parsing_piece.c\
-		srcs/genere_list.c
+		srcs/genere_list.c\
+		srcs/norm_main.c
 
 LIB = libft/libft.a
 
@@ -51,7 +52,7 @@ exe :
 	make && mv brvalcas.filler resources/players/ && cat coucou | ./resources/players/brvalcas.filler
 
 exe_norm :
-	make && mv brvalcas.filler resources/players/ && ./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full --show-leak-kinds=all ./resources/players/brvalcas.filler" -p2 resources/players/abanlin.filler > 42
+	make && mv brvalcas.filler resources/players/ && ./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./resources/players/brvalcas.filler" -p2 resources/players/abanlin.filler > 42
 
 norm :
 	norminette **/*[.c.h]
