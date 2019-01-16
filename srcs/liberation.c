@@ -12,17 +12,23 @@
 
 #include "filler.h"
 
-int			free_tab_int(int **tab, int size)
+int			free_tab_int(int ***tab, int size)
 {
+	int		**tmp;
 	int		x;
 
 	x = -1;
-	if (!tab || size <= 0)
+	tmp = *tab;
+	if (!tmp || size <= 0)
 		return (0);
 	while (++x < size)
-		if (tab[x])
-			free(tab[x]);
-	free(tab);
+		if (tmp[x])
+		{
+			free(tmp[x]);
+		}
+	free(tmp);
+	tmp = NULL;
+	*tab = tmp;
 	return (1);
 }
 
@@ -38,59 +44,44 @@ int			free_line(char **line)
 		return (0);
 }
 
-int			free_tab_str(char **str)
+int			free_tab_str(char ***str)
 {
+	char	**tab;
 	int		i;
 
 	i = -1;
-	if (!str)
+	tab = *str;
+	if (!tab)
 		return (0);
 	else
 	{
-		while (str[++i])
+		while (tab[++i])
 		{
-			free(str[i]);
-			str[i] = NULL;
+			free(tab[i]);
+			tab[i] = NULL;
 		}
-		free(str);
+		free(tab);
+		tab = NULL;
+		*str = tab;
 	}
 	return (i);
 }
 
-int			erase_map(t_coor *map)
+int			erase_file(t_file *file)
 {
-	t_map	*head_map;
+	t_file	*head_file;
 
-	head_map = NULL;
-	if (map->map)
+	head_file = NULL;
+	if (file)
 	{
-		while (map->map)
+		while (file)
 		{
-			head_map = map->map->next;
-			free(map->map->map);
-			map->map->map = NULL;
-			free(map->map);
-			map->map = head_map;
-		}
-		return (1);
-	}
-	return (0);
-}
-
-int			erase_piece(t_coor_piece *piece)
-{
-	t_piece	*head_piece;
-
-	head_piece = NULL;
-	if (piece->piece)
-	{
-		while (piece->piece)
-		{
-			head_piece = piece->piece->next;
-			free(piece->piece->piece);
-			piece->piece->piece = NULL;
-			free(piece->piece);
-			piece->piece = head_piece;
+			head_file = file->next;
+			free(file->file);
+			file->file = NULL;
+			free(file);
+			file = NULL;
+			file = head_file;
 		}
 		return (1);
 	}

@@ -17,11 +17,11 @@
 # include "../libft/includes/get_next_line.h"
 # include "../libft/includes/ft_printf.h"
 
-typedef struct			s_map
+typedef struct			s_file
 {
-	char				*map;
-	struct s_map		*next;
-}						t_map;
+	char				*file;
+	struct s_file		*next;
+}						t_file;
 
 typedef struct			s_tailles_map
 {
@@ -30,16 +30,10 @@ typedef struct			s_tailles_map
 	int					**map_chaleur;
 	char				me;
 	char				ennemi;
-	struct s_map		*map;
+	char				**map;
 	int					**me_list;
 	int					**ennemi_list;
 }						t_coor;
-
-typedef struct			s_piece
-{
-	char				*piece;
-	struct s_piece		*next;
-}						t_piece;
 
 typedef struct			s_tailles_piece
 {
@@ -52,7 +46,7 @@ typedef struct			s_tailles_piece
 	int					**last_best_pos;
 	int					**pos_stars;
 	int					**final_pos;
-	struct s_piece		*piece;
+	char				**piece;
 }						t_coor_piece;
 /*
 **          mappage.c
@@ -79,15 +73,19 @@ int						map_chaleur_horizontal(t_coor *map);
 /*
 **          genere_list.c
 */
-t_map					*new_map(char *line);
-t_piece					*new_piece(char *line);
-t_map					*add_map(t_map *old, t_map *new);
-t_piece					*add_piece(t_piece *old, t_piece *new);
+char					**tab_char(size_t len);
+int						check_char_piece(char *str);
+int						check_tab(char **tab);
+int						check_char(char *str);
+int						check_y_map(char *str, size_t len);
+t_file					*new_line(char *line);
+t_file					*add_pars(t_file *old, t_file *new);
+
 /*
 **          utils.c
 */
-int						erase_list(t_coor *map, t_coor_piece *piece);
 int						nb_tab(t_coor *map, int **tab);
+int						nb_tab_str(char **tab);
 void					ft_print(int x, int y);
 /*
 **          allocation.c
@@ -119,30 +117,34 @@ int						check_around_best_pos(t_coor *map, t_coor_piece *piece);
 int						init_list_filler(t_coor *map,
 		t_coor_piece *piece, int player);
 int						error(char **line);
-int						read_player(t_coor *map, t_coor_piece
-						*piece, char **line);
+int						read_player(t_coor *map, t_coor_piece *piece, char *argv);
+t_file					*read_fd(t_coor *map, t_coor_piece *piece);
+
 /*
 **          liberation.c
 */
-int						free_tab_int(int **tab, int size);
+int						free_tab_int(int ***tab, int size);
 int						free_line(char **line);
-int						free_tab_str(char **str);
-int						erase_map(t_coor *map);
-int						erase_piece(t_coor_piece *piece);
+int						free_tab_str(char ***str);
+int						erase_file(t_file *file);
 /*
 **          parsing_map.c
 */
-int						parsing_map(t_coor *map, char **line);
+int						read_map(t_coor *map, t_file *file);
+int						parsing_map(t_coor *map, char *line);
 /*
 **          parsing_piece.c
 */
-int						parsing_piece(t_coor_piece *piece, char **line);
+int						parsing_piece(t_coor_piece *piece, char *line);
+int						alloc_first_step(t_coor *map);
+int						alloc_second_step(t_coor *map, t_coor_piece *piece);
 /*
 **          main.c
 */
 int						erase_all_malloc(t_coor *map,
-		t_coor_piece *piece, char **line);
+						t_coor_piece *piece);
 int						first_step(t_coor *map);
 int						second_step(t_coor *map, t_coor_piece *piece);
+
 
 #endif

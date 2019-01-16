@@ -12,60 +12,84 @@
 
 #include "filler.h"
 
-t_map		*new_map(char *line)
+char	**tab_char(size_t len)
 {
-	t_map	*list;
+	char	**tab;
+	size_t i;
 
-	if (!(list = malloc(sizeof(t_map))))
+	i = 0;
+	tab = NULL;
+	if (!(tab = (char **)malloc(sizeof(char *) * (len + 1))))
 		return (NULL);
-	list->map = (!list || !line) ? NULL : line;
-	list->next = NULL;
-	return (list);
+	tab[len] = NULL;
+	while (i < len)
+		tab[i++] = NULL;
+	return (tab);
 }
 
-t_piece		*new_piece(char *line)
+int		check_tab(char **tab)
 {
-	t_piece	*list;
+	int	i;
 
-	if (!(list = malloc(sizeof(t_piece))))
-		return (NULL);
-	list->piece = (!list || !line) ? NULL : line;
-	list->next = NULL;
-	return (list);
-}
-
-t_map		*add_map(t_map *old, t_map *new)
-{
-	t_map	*head;
-
-	if (!old)
-		return (new);
-	else if (!new)
-		return (old);
-	else
+	if (!tab)
+		return (-1);
+	i = 0;
+	while (i >= 0)
 	{
-		head = old;
-		while (old->next)
-			old = old->next;
-		old->next = new;
-		return (head);
+		if (tab[i] == NULL)
+			return (i);
+		else
+			i++;
 	}
+	return (i);
 }
 
-t_piece		*add_piece(t_piece *old, t_piece *new)
+int		check_char_piece(char *str)
 {
-	t_piece	*head;
+	int		i;
 
-	if (!old)
-		return (new);
-	else if (!new)
-		return (old);
-	else
+	if (!str)
+		return (0);
+	i = -1;
+	while (str[++i])
+		if (str[i] != '.' && str[i] != '*')
+			return (0);
+	return (1);
+}
+
+int		check_char(char *str)
+{
+	int		i;
+
+	if (!str)
+		return (0);
+	i = -1;
+	while (str[++i])
+		if (str[i] != '.' && str[i] != 'O' && str[i] != 'X')
+			return (0);
+	return (1);
+}
+
+int		check_y_map(char *str, size_t len)
+{
+	int		i;
+	int		tmp;
+	int		val;
+
+	if (!str)
+		return (0);
+	i = -1;
+	val = 0;
+	while (++i < (int)len)
 	{
-		head = old;
-		while (old->next)
-			old = old->next;
-		old->next = new;
-		return (head);
+		if (!(ft_isdigit(str[i])))
+			return (0);
+		val = str[i] - 48;
+		tmp = i;
+		while (tmp > 9)
+			tmp = tmp % 10;
+		if (val != tmp)
+			return (0);
 	}
+	return (1);
 }

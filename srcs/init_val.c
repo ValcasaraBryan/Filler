@@ -47,24 +47,121 @@ int			error(char **line)
 	return (0);
 }
 
-int			read_player(t_coor *map, t_coor_piece *piece, char **line)
+int			read_player(t_coor *map, t_coor_piece *piece, char *argv)
 {
-	int		i;
 	int		player;
+	char	*line;
 
 	player = 0;
-	if ((i = get_next_line(0, line)) > 0)
+	if (!argv)
+		return (0);
+	if (get_next_line(0, &line) > 0)
 	{
-		if (!ft_strstr(*line, "$$$ exec p")
-			&& !ft_strstr(*line, "brvalcas.filler"))
-			return (error(line));
-		if (ft_strstr(*line, "p1"))
+		if (!ft_strstr(line, "$$$ exec p")
+			&& !ft_strstr(argv, "brvalcas.filler"))
+		{
+			free_line(&line);
+			get_next_line(0, NULL);
+			return (0);
+		}
+		if (ft_strstr(line, "p1"))
 			player = 1;
-		else if (ft_strstr(*line, "p2"))
+		else if (ft_strstr(line, "p2"))
 			player = 2;
 		if (!(init_list_filler(map, piece, player)))
-			return (error(line));
-		free_line(line);
+		{
+			free_line(&line);
+			get_next_line(0, NULL);
+			return (0);
+		}
 	}
-	return (i);
+	free_line(&line);
+	return (1);
+}
+
+t_file		*new_file(char *line)
+{
+	t_file	*new;
+
+	if (!(new = malloc(sizeof(t_file))))
+		return (NULL);
+	new->file = (line && new) ? line : NULL;
+	new->next = NULL;
+	return (new);
+}
+
+t_file		*add_file(t_file *file, char *line)
+{
+	t_file *head;
+
+	if (!file)
+		return (new_file(ft_strdup(line)));
+	else
+	{
+		head = file;
+		while (head->next)
+			head = head->next;
+		head->next = new_file(ft_strdup(line));
+		return (file);
+	}
+}
+
+t_file		*read_fd(t_coor *map, t_coor_piece *piece)
+{
+	char *line;
+	int		part;
+	t_file *file;
+
+	file = NULL;
+	line = NULL;
+	part = 0;
+	while (get_next_line(0, &line) > 0)
+	{
+		file = add_file(file, line);
+		part = (line && ft_strstr(line, "Plateau")) ? 1 : part;
+		part = (line && ft_strstr(line, "Piece")) ? 2 : part;
+		if (part == 1)
+		{
+			if (!(parsing_map(map, line)))
+			{
+				erase_file(file);
+				free_tab_str(&map->map);
+				free_line(&line);
+				get_next_line(0, NULL);
+				return (NULL);
+			}
+		}
+		else if (part == 2 && map->map)
+		{
+			if (!(parsing_piece(piece, line)))
+			{
+				erase_file(file);
+				free_tab_str(&map->map);
+				free_tab_str(&piece->piece);
+				free_line(&line);
+				get_next_line(0, NULL);
+				return (NULL);
+			}
+			if (nb_tab_str(map->map) == map->x_map
+				&& nb_tab_str(piece->piece) == piece->x_piece)
+			{
+				free_line(&line);
+				return (file);
+			}
+		}
+		else
+		{
+			free_line(&line);
+			get_next_line(0, NULL);
+			break ;
+		}
+		free_line(&line);
+	}
+	if (!map->map || !piece->piece)
+	{
+		erase_file(file);
+		perror("Error map or Error piece");
+		return (NULL);
+	}
+	return (file);
 }

@@ -12,16 +12,6 @@
 
 #include "filler.h"
 
-int			erase_list(t_coor *map, t_coor_piece *piece)
-{
-	int		ret;
-
-	ret = 0;
-	ret += erase_map(map);
-	ret += erase_piece(piece);
-	return (ret);
-}
-
 int			nb_tab(t_coor *map, int **tab)
 {
 	int		x;
@@ -39,6 +29,18 @@ int			nb_tab(t_coor *map, int **tab)
 			if (tab[x][y] != -1)
 				i++;
 	}
+	return (i);
+}
+
+int						nb_tab_str(char **tab)
+{
+	int		i;
+
+	i = 0;
+	if (!tab)
+		return (0);
+	while (tab[i])
+		i++;
 	return (i);
 }
 

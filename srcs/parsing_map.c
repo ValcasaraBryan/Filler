@@ -12,46 +12,43 @@
 
 #include "filler.h"
 
-int			read_map(t_coor *map, char **line)
+int			parsing_map(t_coor *map, char *line)
 {
 	char	**tab;
-	int		i;
+	int		nb_of_line;
 
-	i = -1;
-	while (++i < map->x_map && get_next_line(0, line))
+	nb_of_line = 0;
+	tab = NULL;
+	if (ft_strstr(line, "Plateau"))
 	{
-		tab = ft_strsplit(*line, ' ');
-		free_line(line);
-		if (tab[1])
-			map->map = add_map(map->map, new_map(ft_strdup(tab[1])));
-		free_tab_str(tab);
-	}
-	return (1);
-}
-
-int			parsing_map(t_coor *map, char **line)
-{
-	char	**tab;
-
-	if (!(*line))
-		return (0);
-	if (ft_strstr(*line, "Plateau"))
-	{
-		tab = ft_strsplit(*line, ' ');
-		free_line(line);
-		map->x_map = ft_atoi(tab[1]);
-		map->y_map = ft_atoi(tab[2]);
-		free_tab_str(tab);
-		if (!(map->map_chaleur = (int **)malloc(sizeof(int *) * map->x_map)))
+		tab = ft_strsplit(line, ' ');
+		map->x_map = (tab[1]) ? ft_atoi(tab[1]) : 0;
+		map->y_map = (tab[2]) ? ft_atoi(tab[2]) : 0;
+		free_tab_str(&tab);
+		if (map->x_map <= 0 || map->y_map <= 0)
 			return (0);
-		if (!(map->me_list = (int **)malloc(sizeof(int *) * map->x_map)))
-			return (0);
-		if (!(map->ennemi_list = (int **)malloc(sizeof(int *) * map->x_map)))
-			return (0);
-		get_next_line(0, line);
-		free_line(line);
-		read_map(map, line);
 		return (1);
 	}
-	return (0);
+	tab = ft_strsplit(line, ' ');
+	if (tab[0] && !tab[1] && !map->map && (int)ft_strlen(tab[0]) == map->y_map
+		&& check_y_map(tab[0], map->y_map))
+	{
+		free_tab_str(&tab);
+		return (1);
+	}
+	if (!map->map)
+		map->map = tab_char((size_t)map->x_map);
+	if (tab[0] && tab[1] && (nb_of_line = ft_atoi(tab[0])) >= 0
+		&& nb_of_line < map->x_map && !map->map[nb_of_line]
+		&& (int)ft_strlen(tab[1]) == map->y_map && check_char(tab[1])
+		&& ((nb_of_line > 0 && map->map[nb_of_line - 1]) || nb_of_line == 0))
+			map->map[nb_of_line] = ft_strdup(tab[1]);
+	else
+	{
+		free_tab_str(&tab);
+		perror("Error map ---");
+		return (0);
+	}
+	free_tab_str(&tab);
+	return (1);
 }

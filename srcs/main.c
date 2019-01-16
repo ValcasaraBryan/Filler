@@ -13,24 +13,17 @@
 #include "filler.h"
 
 int					erase_all_malloc(t_coor *map,
-		t_coor_piece *piece, char **line)
+		t_coor_piece *piece)
 {
-	if (!(erase_list(map, piece)))
-		return (0);
-	if (!(free_tab_int(map->me_list, map->x_map)))
-		return (0);
-	if (!(free_tab_int(map->ennemi_list, map->x_map)))
-		return (0);
-	if (!(free_tab_int(piece->pos_stars, piece->x_piece)))
-		return (0);
-	if (!(free_tab_int(map->map_chaleur, map->x_map)))
-		return (0);
-	if (!(free_tab_int(piece->last_best_pos, map->x_map)))
-		return (0);
-	if (!(free_tab_int(piece->final_pos, map->x_map)))
-		return (0);
-	if (!(free_line(line)))
-		return (0);
+	free_tab_str(&map->map);
+	free_tab_str(&piece->piece);
+	free_tab_int(&map->map_chaleur, map->x_map);
+	free_tab_int(&map->me_list, map->x_map);
+	free_tab_int(&map->ennemi_list, map->x_map);
+	free_tab_int(&piece->pos_stars, piece->x_piece);
+	free_tab_int(&piece->last_best_pos, map->x_map);
+	free_tab_int(&piece->final_pos, map->x_map);
+	get_next_line(0, NULL);
 	return (1);
 }
 
@@ -68,34 +61,42 @@ int					second_step(t_coor *map, t_coor_piece *piece)
 	return (1);
 }
 
-int					main(void)
+int					main(int argc, char **argv)
 {
-	char			*line;
 	int				etapes;
+	t_file			*file;
 	t_coor			map;
 	t_coor_piece	piece;
 
 	etapes = 0;
-	if (!(read_player(&map, &piece, &line)))
+	file = NULL;
+	(void)argc;
+	if (!(read_player(&map, &piece, argv[0])))
 		return (0);
-	while (get_next_line(0, &line))
+	while (1)
 	{
-		etapes += parsing_map(&map, &line);
-		etapes += parsing_piece(&piece, &line);
-		if (etapes == 1)
+		file = read_fd(&map, &piece);
+		if (file)
 		{
+			if (!(alloc_first_step(&map)))
+			{
+				perror("Error malloc map\n");
+				return (0);
+			}
 			if (!(first_step(&map)))
 			{
-				erase_all_malloc(&map, &piece, &line);
+				erase_all_malloc(&map, &piece);
 				perror("Error map\n");
 				return (0);
 			}
-		}
-		else if (etapes == 2)
-		{
+			if (!(alloc_second_step(&map, &piece)))
+			{
+				perror("Error malloc piece\n");
+				return (0);
+			}
 			if (!(second_step(&map, &piece)))
 			{
-				erase_all_malloc(&map, &piece, &line);
+				erase_all_malloc(&map, &piece);
 				perror("Error piece\n");
 				return (0);
 			}
@@ -117,26 +118,21 @@ int					main(void)
 					break ;
 			}
 			etapes = 0;
-			erase_all_malloc(&map, &piece, &line);
+			erase_file(file);
+			erase_all_malloc(&map, &piece);
 			if (piece.x_final_pos >= 0 && piece.y_final_pos >= 0)
 				ft_print(piece.x_final_pos, piece.y_final_pos);
 			else
 			{
 				ft_print(0, 0);
-				break ;
+				return (0);
 			}
 			piece.y_final_pos = -1;
 			piece.x_final_pos = -1;
 		}
-		else if (etapes < 0)
-		{
-			erase_all_malloc(&map, &piece, &line);
-			perror("Error malloc\n");
-			return (0);
-		}
-		free_line(&line);
+		else
+			break;
 	}
-	free_line(&line);
-	get_next_line(0, &line);
+	erase_file(file);
 	return (0);
 }
