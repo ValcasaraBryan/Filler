@@ -6,7 +6,7 @@
 /*   By: brvalcas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/17 20:18:27 by brvalcas          #+#    #+#             */
-/*   Updated: 2019/01/07 15:23:19 by brvalcas         ###   ########.fr       */
+/*   Updated: 2019/01/16 19:35:33 by brvalcas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,45 +92,19 @@ t_file		*read_fd(t_coor *map, t_coor_piece *piece)
 		if (part == 1)
 		{
 			if (!(parsing_map(map, line)))
-			{
-				erase_file(file);
-				free_tab_str(&map->map);
-				free_line(&line);
-				get_next_line(0, NULL);
-				return (NULL);
-			}
+				return (free_init_map_piece(map, piece, &file, &line));
 		}
-		else if (part == 2 && map->map)
+		else if (part == 2)
 		{
 			if (!(parsing_piece(piece, line)))
-			{
-				erase_file(file);
-				free_tab_str(&map->map);
-				free_tab_str(&piece->piece);
-				free_line(&line);
-				get_next_line(0, NULL);
-				return (NULL);
-			}
+				return (free_init_map_piece(map, piece, &file, &line));
 			if (nb_tab_str(map->map) == map->x_map
-				&& nb_tab_str(piece->piece) == piece->x_piece)
-			{
-				free_line(&line);
-				return (file);
-			}
+					&& nb_tab_str(piece->piece) == piece->x_piece)
+				return (norm_pars(file, &line));
 		}
 		else
-		{
-			free_line(&line);
-			get_next_line(0, NULL);
-			break ;
-		}
+			return (free_init_val(map, piece, &file, &line));
 		free_line(&line);
 	}
-	if (!map->map || !piece->piece)
-	{
-		erase_file(file);
-		perror("Error map or Error piece");
-		return (NULL);
-	}
-	return (file);
+	return (free_init_val(map, piece, &file, &line));
 }

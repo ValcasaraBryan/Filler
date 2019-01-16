@@ -25,8 +25,8 @@ SRC =	srcs/main.c\
 		srcs/parsing_map.c\
 		srcs/parsing_piece.c\
 		srcs/genere_list.c\
-		srcs/norm_main.c
-
+		srcs/norm_main.c\
+		srcs/norm_init_val.c
 LIB = libft/libft.a
 
 LIB_FILLER = Filler.a
@@ -49,10 +49,10 @@ $(NAME) : $(OBJET)
 	@$(CC) $(CFLAGS) $(LIB) $(LIB_FILLER) -o $@
 
 exe :
-	make && mv brvalcas.filler resources/players/ && cat coucou | ./resources/players/brvalcas.filler
+	make && mv brvalcas.filler resources/players/ && cat coucou | valgrind --leak-check=full ./resources/players/brvalcas.filler
 
 exe_norm :
-	make && mv brvalcas.filler resources/players/ && ./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./resources/players/brvalcas.filler" -p2 resources/players/abanlin.filler > 42
+	make && mv brvalcas.filler resources/players/ && ./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full ./resources/players/brvalcas.filler" -p2 resources/players/abanlin.filler > 42
 
 norm :
 	norminette **/*[.c.h]

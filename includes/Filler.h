@@ -108,6 +108,15 @@ int						check_arount_best_pos_piece(t_coor *map,
 						t_coor_piece *piece, int x, int y);
 int						check_around_best_pos(t_coor *map, t_coor_piece *piece);
 /*
+**          norm_init_val.c
+*/
+t_file					*free_init_map_piece(t_coor *map, t_coor_piece *piece,
+						t_file **file, char **line);
+t_file					*free_init_val(t_coor *map, t_coor_piece *piece,
+						t_file **file, char **line);
+t_file					*norm_pars(t_file *file, char **line);
+
+/*
 **          init_val.c
 */
 int						init_list_filler(t_coor *map,
