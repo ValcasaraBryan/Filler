@@ -53,8 +53,7 @@ void	norm_main_while(t_coor *map, t_coor_piece *piece)
 				piece->last_best_pos[piece->x_best_pos]
 				[piece->y_best_pos] = piece->y_best_pos;
 		check_pos_final(map, piece);
-		if (nb_tab(map, map->me_list) > ((map->x_map / 2)
-			* map->y_map) + (map->x_map % 2))
+		if (nb_tab(map, map->me_list) > ((map->x_map * map->y_map) * 7) / 10)
 			break ;
 	}
 }
