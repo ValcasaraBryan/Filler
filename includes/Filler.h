@@ -115,7 +115,8 @@ t_file					*free_init_map_piece(t_coor *map, t_coor_piece *piece,
 t_file					*free_init_val(t_coor *map, t_coor_piece *piece,
 						t_file **file, char **line);
 t_file					*norm_pars(t_file *file, char **line);
-
+int						part_init(char *line, int part);
+int						valid_init(t_coor *map, t_coor_piece *piece);
 /*
 **          init_val.c
 */

@@ -87,23 +87,17 @@ t_file		*read_fd(t_coor *map, t_coor_piece *piece)
 	while (get_next_line(0, &line) > 0)
 	{
 		file = add_file(file, line);
-		part = (line && ft_strstr(line, "Plateau")) ? 1 : part;
-		part = (line && ft_strstr(line, "Piece")) ? 2 : part;
+		part = part_init(line, part);
 		if (part == 1)
-		{
 			if (!(parsing_map(map, line)))
 				return (free_init_map_piece(map, piece, &file, &line));
-		}
-		else if (part == 2)
-		{
+		if (part == 2)
 			if (!(parsing_piece(piece, line)))
 				return (free_init_map_piece(map, piece, &file, &line));
-			if (nb_tab_str(map->map) == map->x_map
-					&& nb_tab_str(piece->piece) == piece->x_piece)
-				return (norm_pars(file, &line));
-		}
-		else
-			return (free_init_val(map, piece, &file, &line));
+		if (part == 2 && valid_init(map, piece))
+			return (norm_pars(file, &line));
+		if (part != 1 && part != 2)
+			break ;
 		free_line(&line);
 	}
 	return (free_init_val(map, piece, &file, &line));
