@@ -52,9 +52,6 @@ exe :
 exe_norm :
 	make && mv brvalcas.filler resources/players/ && ./resources/filler_vm -f resources/maps/map01 -p1 "valgrind --leak-check=full ./resources/players/brvalcas.filler" -p2 resources/players/abanlin.filler > 42
 
-norm :
-	norminette **/*[.c.h]
-
 clean :
 	@rm -f $(OBJET)
 	@make clean -C libft
