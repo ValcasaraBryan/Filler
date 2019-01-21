@@ -16,24 +16,24 @@ int		norm_main_alloc(t_coor *map, t_coor_piece *piece)
 {
 	if (!(alloc_first_step(map)))
 	{
-		perror("Error malloc map\n");
+		perror("Error malloc map");
 		return (0);
 	}
 	if (!(first_step(map)))
 	{
 		erase_all_malloc(map, piece);
-		perror("Error map\n");
+		perror("Error map");
 		return (0);
 	}
 	if (!(alloc_second_step(map, piece)))
 	{
-		perror("Error malloc piece\n");
+		perror("Error malloc piece");
 		return (0);
 	}
 	if (!(second_step(map, piece)))
 	{
 		erase_all_malloc(map, piece);
-		perror("Error piece\n");
+		perror("Error piece");
 		return (0);
 	}
 	return (1);

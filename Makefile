@@ -27,9 +27,9 @@ SRC =	srcs/main.c\
 		srcs/genere_list.c\
 		srcs/norm_main.c\
 		srcs/norm_init_val.c
+
 LIB = libft/libft.a
 
-LIB_FILLER = Filler.a
 
 OBJET = $(SRC:.c=.o)
 
@@ -44,9 +44,7 @@ $(OBJET):$(INCLUDES)
 
 $(NAME) : $(OBJET)
 	@make -C libft
-	@ar rc $(LIB_FILLER) $^
-	@ranlib $(LIB_FILLER)
-	@$(CC) $(CFLAGS) $(LIB) $(LIB_FILLER) -o $@
+	@$(CC) $(CFLAGS) $(LIB) $(OBJET) -o $@
 
 exe :
 	make && mv brvalcas.filler resources/players/ && cat coucou | valgrind --leak-check=full ./resources/players/brvalcas.filler
@@ -63,7 +61,6 @@ clean :
 
 fclean : clean
 	@rm -f $(NAME)
-	@rm -f $(LIB_FILLER)
 	@make fclean -C libft
 
 re : fclean all

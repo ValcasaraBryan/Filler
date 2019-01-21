@@ -96,8 +96,8 @@ t_file		*read_fd(t_coor *map, t_coor_piece *piece)
 				return (free_init_map_piece(map, piece, &file, &line));
 		if (part == 2 && valid_init(map, piece))
 			return (norm_pars(file, &line));
-		if (part != 1 && part != 2)
-			break ;
+		if ((part != 1 && part != 2) || (part == 2 && !map->map))
+			return (free_init_map_piece(map, piece, &file, &line));
 		free_line(&line);
 	}
 	return (free_init_val(map, piece, &file, &line));
