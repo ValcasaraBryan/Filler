@@ -22,7 +22,10 @@ int			plateau_val(t_coor *map, char *line)
 	map->y_map = (tab[2]) ? ft_atoi(tab[2]) : 0;
 	free_tab_str(&tab);
 	if (map->x_map <= 0 || map->y_map <= 0)
+	{
+		perror("Error coor ");
 		return (0);
+	}
 	return (1);
 }
 
