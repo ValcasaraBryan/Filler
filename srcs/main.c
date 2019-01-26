@@ -69,6 +69,7 @@ int					read_player(t_coor *map, t_coor_piece *piece,
 	char			*line;
 
 	player = 0;
+	line = NULL;
 	if (!argv)
 		return (0);
 	if ((ret = get_next_line(0, &line)) > 0)
