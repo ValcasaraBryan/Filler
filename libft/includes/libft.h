@@ -82,6 +82,7 @@ int					ft_putstr_len(const char *str, size_t len, int fd);
 /*
 **	ft_str
 */
+int					ft_str_is_digit(char *str);
 char				*ft_strcat(char *s1, const char *s2);
 char				*ft_strchr(const char *s, int c);
 void				ft_strclr(char *s);

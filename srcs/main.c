@@ -65,12 +65,13 @@ int					read_player(t_coor *map, t_coor_piece *piece,
 					char *argv)
 {
 	int				player;
+	int				ret;
 	char			*line;
 
 	player = 0;
 	if (!argv)
 		return (0);
-	if (get_next_line(0, &line) > 0)
+	if ((ret = get_next_line(0, &line)) > 0)
 	{
 		if (!ft_strstr(line, "$$$ exec p")
 			&& !ft_strstr(argv, "brvalcas.filler"))
@@ -82,6 +83,8 @@ int					read_player(t_coor *map, t_coor_piece *piece,
 		if (!(init_list_filler(map, piece, player)))
 			return (error(&line));
 	}
+	if (ret == -1 || ret == 0)
+		return (error(&line));
 	free_line(&line);
 	return (1);
 }

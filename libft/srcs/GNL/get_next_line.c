@@ -19,7 +19,7 @@ int					get_next_line(const int fd, char **line)
 	char			buf[BUFF_SIZE + 1];
 	int				ret;
 
-	if (line && read(fd, buf, 0) != (-1))
+	if (line && (read(fd, buf, 0) != (-1)))
 	{
 		tmp = ft_check_link(&list, fd);
 		if (!tmp->content || !(ft_strchr((char *)tmp->content, '\n')))
@@ -115,6 +115,8 @@ void				ft_free_list(t_list **list, const int fd)
 	t_list	*too_free;
 
 	tmp = *list;
+	if (!tmp)
+		return ;
 	if (fd == (int)tmp->content_size)
 	{
 		*list = (*list)->next;
