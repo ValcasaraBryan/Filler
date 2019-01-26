@@ -12,21 +12,29 @@
 
 #include "filler.h"
 
-int			parsing_piece(t_coor_piece *piece, char *line)
+int			plateau_val_piece(t_coor_piece *piece, char *line)
 {
 	char	**tab;
+
+	if (!(tab = ft_strsplit(line, ' ')))
+		return (0);
+	piece->x_piece = (tab[1]) ? ft_atoi(tab[1]) : 0;
+	piece->y_piece = (tab[2]) ? ft_atoi(tab[2]) : 0;
+	free_tab_str(&tab);
+	if (piece->x_piece <= 0 || piece->y_piece <= 0)
+	{
+		perror("Error coor piece ");
+		return (0);
+	}
+	return (1);
+}
+
+int			parsing_piece(t_coor_piece *piece, char *line)
+{
 	int		i;
 
 	if (ft_strstr(line, "Piece"))
-	{
-		tab = ft_strsplit(line, ' ');
-		piece->x_piece = (tab[1]) ? ft_atoi(tab[1]) : 0;
-		piece->y_piece = (tab[2]) ? ft_atoi(tab[2]) : 0;
-		free_tab_str(&tab);
-		if (piece->x_piece <= 0 || piece->y_piece <= 0)
-			return (0);
-		return (1);
-	}
+		plateau_val_piece(piece, line);
 	if (!piece->piece)
 		piece->piece = tab_char((size_t)piece->x_piece);
 	if (check_char_piece(line) && piece->piece && (int)ft_strlen(line)

@@ -143,6 +143,7 @@ int						parsing_map(t_coor *map, char *line);
 /*
 **          parsing_piece.c
 */
+int						plateau_val_piece(t_coor_piece *piece, char *line);
 int						parsing_piece(t_coor_piece *piece, char *line);
 int						alloc_first_step(t_coor *map);
 int						alloc_second_step(t_coor *map, t_coor_piece *piece);
