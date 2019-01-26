@@ -20,7 +20,6 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <wchar.h>
-# include <stdio.h>
 # include <locale.h>
 # include <limits.h>
 
