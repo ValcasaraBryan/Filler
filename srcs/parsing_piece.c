@@ -34,7 +34,7 @@ int			parsing_piece(t_coor_piece *piece, char *line)
 	int		i;
 
 	if (ft_strstr(line, "Piece"))
-		plateau_val_piece(piece, line);
+		return (plateau_val_piece(piece, line));
 	if (!piece->piece)
 		piece->piece = tab_char((size_t)piece->x_piece);
 	if (check_char_piece(line) && piece->piece && (int)ft_strlen(line)
